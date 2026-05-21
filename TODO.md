@@ -50,7 +50,7 @@ This file is the working checklist for building the project in small committed t
 - [x] Build dashboard overview and statistics.
 - [x] Build task list with search, filters, sorting, and pagination.
 - [x] Build task create/edit flows.
-- [ ] Build Kanban board.
+- [x] Build Kanban board.
 - [ ] Add loading, toast, and empty states.
 
 ## Milestone 7: Quality And Delivery
@@ -94,3 +94,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Built dashboard statistics, completed-task chart, upcoming deadlines, and task store fetch.
 - 2026-05-21: Built task list view with search, filters, sorting, pagination, and API-backed states.
 - 2026-05-21: Built task create and edit routes, forms, validation, and store mutations.
+- 2026-05-21: Built drag-and-drop Kanban board with API-backed status updates.
