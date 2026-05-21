@@ -2,6 +2,7 @@ import { LayoutDashboard, ListTodo, LogOut, PanelsTopLeft, Settings, ShieldCheck
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/authStore'
 
@@ -53,10 +54,13 @@ export function AppLayout() {
               <p className="text-sm font-medium">{user?.name || 'Member'}</p>
               <p className="text-xs text-muted-foreground">{user?.email || 'Secure workspace'}</p>
             </div>
-            <Button variant="ghost" size="sm" onClick={logout}>
-              <LogOut className="size-4" aria-hidden="true" />
-              Logout
-            </Button>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button variant="ghost" size="sm" onClick={logout}>
+                <LogOut className="size-4" aria-hidden="true" />
+                Logout
+              </Button>
+            </div>
           </header>
           <div className="min-w-0 flex-1 px-6 py-6">
             <Outlet />
@@ -66,4 +70,3 @@ export function AppLayout() {
     </main>
   )
 }
-

@@ -42,7 +42,7 @@ This file is the working checklist for building the project in small committed t
 - [x] Add app routing, protected routes, and layouts.
 - [x] Add Axios API client with refresh-token handling.
 - [x] Add Zustand auth store.
-- [ ] Add theme provider and dark/light mode.
+- [x] Add theme provider and dark/light mode.
 
 ## Milestone 6: Frontend Features
 
@@ -89,3 +89,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Added Axios API client, in-memory token manager, refresh retry, and endpoint wrappers.
 - 2026-05-21: Added Zustand auth store for memory-only access token and auth session actions.
 - 2026-05-21: Added React Router routes, protected route guard, auth layout, and dashboard layout.
+- 2026-05-21: Added dark/light theme provider and icon toggle.

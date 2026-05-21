@@ -1,6 +1,8 @@
 import { ShieldCheck } from 'lucide-react'
 import { Outlet } from 'react-router-dom'
 
+import { ThemeToggle } from '@/components/theme-toggle'
+
 export function AuthLayout() {
   return (
     <main className="grid min-h-svh bg-background text-foreground lg:grid-cols-[1fr_480px]">
@@ -18,10 +20,12 @@ export function AuthLayout() {
           </p>
         </div>
       </section>
-      <section className="flex min-h-svh items-center justify-center px-6 py-10">
+      <section className="relative flex min-h-svh items-center justify-center px-6 py-10">
+        <div className="absolute right-5 top-5">
+          <ThemeToggle />
+        </div>
         <Outlet />
       </section>
     </main>
   )
 }
-
