@@ -1,6 +1,11 @@
+import dns from 'node:dns'
 import mongoose from 'mongoose'
 
 import { env } from './env.js'
+
+if (env.DNS_SERVERS.length > 0) {
+  dns.setServers(env.DNS_SERVERS)
+}
 
 mongoose.set('sanitizeFilter', true)
 

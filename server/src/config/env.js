@@ -18,6 +18,17 @@ const envSchema = z.object({
   REFRESH_TOKEN_EXPIRES: z.string().default('7d'),
   COOKIE_SECURE: booleanFromString.default(false),
   COOKIE_SAME_SITE: z.enum(['strict', 'lax', 'none']).default('lax'),
+  DNS_SERVERS: z
+    .string()
+    .optional()
+    .transform((value) =>
+      value
+        ? value
+            .split(',')
+            .map((server) => server.trim())
+            .filter(Boolean)
+        : [],
+    ),
 })
 
 const parsedEnv = envSchema.safeParse(process.env)
