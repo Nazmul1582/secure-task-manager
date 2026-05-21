@@ -1,48 +1,52 @@
-import { ShieldCheck } from 'lucide-react'
+import { useEffect } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
-import { Button } from '@/components/ui/button'
+import { AppLoading } from '@/components/AppLoading'
+import { AuthLayout } from '@/layouts/AuthLayout'
+import { AppLayout } from '@/layouts/AppLayout'
+import { DashboardPage } from '@/pages/DashboardPage'
+import { KanbanPage } from '@/pages/KanbanPage'
+import { LoginPage } from '@/pages/LoginPage'
+import { NotFoundPage } from '@/pages/NotFoundPage'
+import { RegisterPage } from '@/pages/RegisterPage'
+import { SettingsPage } from '@/pages/SettingsPage'
+import { TasksPage } from '@/pages/TasksPage'
+import { ProtectedRoute } from '@/routes/ProtectedRoute'
+import { useAuthStore } from '@/store/authStore'
 
 function App() {
+  const status = useAuthStore((state) => state.status)
+  const refresh = useAuthStore((state) => state.refresh)
+
+  useEffect(() => {
+    if (status === 'idle') {
+      refresh()
+    }
+  }, [refresh, status])
+
+  if (status === 'idle' || status === 'loading') {
+    return <AppLoading />
+  }
+
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <section className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-6 py-10">
-        <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground">
-          <span className="flex size-10 items-center justify-center rounded-md border border-border bg-card text-primary shadow-sm">
-            <ShieldCheck className="size-5" aria-hidden="true" />
-          </span>
-          secureTaskManager
-        </div>
+    <Routes>
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
 
-        <div className="mt-10 max-w-3xl">
-          <h1 className="text-4xl font-semibold leading-tight text-foreground sm:text-5xl">
-            Secure task management for focused teams.
-          </h1>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
-            The frontend foundation is ready for protected routing, auth screens, dashboards, and task workflows.
-          </p>
-        </div>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AppLayout />}>
+          <Route index element={<DashboardPage />} />
+          <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/tasks/kanban" element={<KanbanPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
+      </Route>
 
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Button>Open dashboard</Button>
-          <Button variant="outline">Create account</Button>
-        </div>
-
-        <div className="mt-12 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-md border border-border bg-card p-5 shadow-sm">
-            <p className="text-sm font-medium">JWT auth</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">Access tokens stay in memory while refresh tokens live in HTTP-only cookies.</p>
-          </div>
-          <div className="rounded-md border border-border bg-card p-5 shadow-sm">
-            <p className="text-sm font-medium">Task workflows</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">Filtering, search, assignment, priority, due dates, and Kanban views are planned.</p>
-          </div>
-          <div className="rounded-md border border-border bg-card p-5 shadow-sm">
-            <p className="text-sm font-medium">Responsive UI</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">Tailwind and shadcn-style primitives are ready for the app screens.</p>
-          </div>
-        </div>
-      </section>
-    </main>
+      <Route path="/404" element={<NotFoundPage />} />
+      <Route path="*" element={<Navigate to="/404" replace />} />
+    </Routes>
   )
 }
 

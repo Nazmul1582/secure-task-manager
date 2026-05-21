@@ -39,7 +39,7 @@ This file is the working checklist for building the project in small committed t
 ## Milestone 5: Frontend Core
 
 - [x] Configure Tailwind CSS and shadcn/ui foundation.
-- [ ] Add app routing, protected routes, and layouts.
+- [x] Add app routing, protected routes, and layouts.
 - [x] Add Axios API client with refresh-token handling.
 - [x] Add Zustand auth store.
 - [ ] Add theme provider and dark/light mode.
@@ -88,3 +88,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Configured Tailwind CSS v4, shadcn-style tokens, aliases, and base UI utilities.
 - 2026-05-21: Added Axios API client, in-memory token manager, refresh retry, and endpoint wrappers.
 - 2026-05-21: Added Zustand auth store for memory-only access token and auth session actions.
+- 2026-05-21: Added React Router routes, protected route guard, auth layout, and dashboard layout.

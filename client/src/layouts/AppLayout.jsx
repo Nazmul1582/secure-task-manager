@@ -1,0 +1,69 @@
+import { LayoutDashboard, ListTodo, LogOut, PanelsTopLeft, Settings, ShieldCheck } from 'lucide-react'
+import { NavLink, Outlet } from 'react-router-dom'
+
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/store/authStore'
+
+const navigation = [
+  { label: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { label: 'Tasks', href: '/tasks', icon: ListTodo },
+  { label: 'Kanban', href: '/tasks/kanban', icon: PanelsTopLeft },
+  { label: 'Settings', href: '/settings', icon: Settings },
+]
+
+export function AppLayout() {
+  const user = useAuthStore((state) => state.user)
+  const logout = useAuthStore((state) => state.logout)
+
+  return (
+    <main className="min-h-svh bg-background text-foreground">
+      <div className="mx-auto grid min-h-svh w-full max-w-7xl lg:grid-cols-[260px_1fr]">
+        <aside className="border-b border-border bg-card px-4 py-4 lg:border-b-0 lg:border-r">
+          <div className="flex items-center gap-3 px-2 text-sm font-semibold">
+            <span className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <ShieldCheck className="size-5" aria-hidden="true" />
+            </span>
+            secureTaskManager
+          </div>
+
+          <nav className="mt-6 flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
+            {navigation.map((item) => (
+              <NavLink
+                key={item.href}
+                to={item.href}
+                end={item.href === '/'}
+                className={({ isActive }) =>
+                  cn(
+                    'flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-secondary-foreground',
+                    isActive && 'bg-secondary text-secondary-foreground',
+                  )
+                }
+              >
+                <item.icon className="size-4" aria-hidden="true" />
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        </aside>
+
+        <section className="flex min-w-0 flex-col">
+          <header className="flex min-h-16 items-center justify-between border-b border-border bg-background/90 px-6">
+            <div>
+              <p className="text-sm font-medium">{user?.name || 'Member'}</p>
+              <p className="text-xs text-muted-foreground">{user?.email || 'Secure workspace'}</p>
+            </div>
+            <Button variant="ghost" size="sm" onClick={logout}>
+              <LogOut className="size-4" aria-hidden="true" />
+              Logout
+            </Button>
+          </header>
+          <div className="min-w-0 flex-1 px-6 py-6">
+            <Outlet />
+          </div>
+        </section>
+      </div>
+    </main>
+  )
+}
+
