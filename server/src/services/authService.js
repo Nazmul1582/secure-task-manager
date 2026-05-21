@@ -104,6 +104,41 @@ export async function rotateRefreshSession(refreshToken, req) {
   };
 }
 
+export async function logoutUser(refreshToken) {
+  if (!refreshToken) {
+    return;
+  }
+
+  let payload;
+
+  try {
+    payload = verifyRefreshToken(refreshToken);
+  } catch {
+    return;
+  }
+
+  const user = await User.findById(payload.sub).select('+refreshTokens');
+
+  if (!user) {
+    return;
+  }
+
+  const tokenHash = hashToken(refreshToken);
+  user.refreshTokens = user.refreshTokens.filter((session) => session.tokenHash !== tokenHash);
+  await user.save({ validateBeforeSave: false });
+}
+
+export async function logoutAllSessions(userId) {
+  const user = await User.findById(userId).select('+refreshTokens');
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  user.refreshTokens = [];
+  await user.save({ validateBeforeSave: false });
+}
+
 async function saveRefreshSession(user, refreshToken, req) {
   const now = new Date();
 

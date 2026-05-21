@@ -1,6 +1,10 @@
-import { loginUser, registerUser, rotateRefreshSession } from '../services/authService.js';
+import { loginUser, logoutAllSessions, logoutUser, registerUser, rotateRefreshSession } from '../services/authService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { getRefreshCookieOptions, REFRESH_TOKEN_COOKIE_NAME } from '../utils/tokens.js';
+import {
+  getClearRefreshCookieOptions,
+  getRefreshCookieOptions,
+  REFRESH_TOKEN_COOKIE_NAME,
+} from '../utils/tokens.js';
 import { sendSuccess } from '../utils/apiResponse.js';
 
 export const register = asyncHandler(async (req, res) => {
@@ -44,5 +48,25 @@ export const refreshToken = asyncHandler(async (req, res) => {
       user,
       accessToken,
     },
+  });
+});
+
+export const logout = asyncHandler(async (req, res) => {
+  const currentRefreshToken = req.cookies?.[REFRESH_TOKEN_COOKIE_NAME];
+
+  await logoutUser(currentRefreshToken);
+  res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, getClearRefreshCookieOptions());
+
+  sendSuccess(res, {
+    message: 'Logout successful',
+  });
+});
+
+export const logoutAll = asyncHandler(async (req, res) => {
+  await logoutAllSessions(req.user.id);
+  res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, getClearRefreshCookieOptions());
+
+  sendSuccess(res, {
+    message: 'Logged out from all devices',
   });
 });

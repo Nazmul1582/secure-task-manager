@@ -67,6 +67,11 @@ export function getRefreshCookieOptions() {
   };
 }
 
+export function getClearRefreshCookieOptions() {
+  const { maxAge, ...options } = getRefreshCookieOptions();
+  return options;
+}
+
 function parseDuration(value) {
   if (typeof value === 'number') {
     return value * 1000;
@@ -82,4 +87,3 @@ function parseDuration(value) {
   const [, amount, unit] = match;
   return Number(amount) * durationUnits[unit];
 }
-
