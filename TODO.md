@@ -29,7 +29,7 @@ This file is the working checklist for building the project in small committed t
 
 ## Milestone 4: Task API
 
-- [ ] Implement task creation.
+- [x] Implement task creation.
 - [ ] Implement task listing with pagination, filters, search, and sorting.
 - [ ] Implement task detail lookup with ownership rules.
 - [ ] Implement task update.
@@ -79,3 +79,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Added access-token authentication middleware and role authorization guard.
 - 2026-05-21: Implemented single-session logout and logout-all session clearing.
 - 2026-05-21: Implemented current-user and secure change-password auth routes.
+- 2026-05-21: Implemented protected task creation with validation and assignment rules.
