@@ -16,7 +16,7 @@ This file is the working checklist for building the project in small committed t
 - [x] Connect MongoDB with a reusable database module.
 - [x] Add centralized async, error, response, and validation helpers.
 - [x] Add User and Task Mongoose models.
-- [ ] Add JWT access and refresh token utilities.
+- [x] Add JWT access and refresh token utilities.
 
 ## Milestone 3: Authentication API
 
@@ -72,3 +72,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Added reusable MongoDB connection and graceful server shutdown.
 - 2026-05-21: Added backend async, response, validation, and error handling helpers.
 - 2026-05-21: Added User and Task Mongoose models with auth/session and task indexes.
+- 2026-05-21: Added JWT signing, verification, hashing, cookie, and expiry utilities.
