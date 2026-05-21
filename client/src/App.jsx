@@ -1,121 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { ShieldCheck } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <main className="min-h-svh bg-background text-foreground">
+      <section className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-6 py-10">
+        <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground">
+          <span className="flex size-10 items-center justify-center rounded-md border border-border bg-card text-primary shadow-sm">
+            <ShieldCheck className="size-5" aria-hidden="true" />
+          </span>
+          secureTaskManager
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+
+        <div className="mt-10 max-w-3xl">
+          <h1 className="text-4xl font-semibold leading-tight text-foreground sm:text-5xl">
+            Secure task management for focused teams.
+          </h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
+            The frontend foundation is ready for protected routing, auth screens, dashboards, and task workflows.
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button>Open dashboard</Button>
+          <Button variant="outline">Create account</Button>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+
+        <div className="mt-12 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-md border border-border bg-card p-5 shadow-sm">
+            <p className="text-sm font-medium">JWT auth</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Access tokens stay in memory while refresh tokens live in HTTP-only cookies.</p>
+          </div>
+          <div className="rounded-md border border-border bg-card p-5 shadow-sm">
+            <p className="text-sm font-medium">Task workflows</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Filtering, search, assignment, priority, due dates, and Kanban views are planned.</p>
+          </div>
+          <div className="rounded-md border border-border bg-card p-5 shadow-sm">
+            <p className="text-sm font-medium">Responsive UI</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Tailwind and shadcn-style primitives are ready for the app screens.</p>
+          </div>
         </div>
       </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   )
 }
 

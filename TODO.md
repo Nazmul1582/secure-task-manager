@@ -38,7 +38,7 @@ This file is the working checklist for building the project in small committed t
 
 ## Milestone 5: Frontend Core
 
-- [ ] Configure Tailwind CSS and shadcn/ui foundation.
+- [x] Configure Tailwind CSS and shadcn/ui foundation.
 - [ ] Add app routing, protected routes, and layouts.
 - [ ] Add Axios API client with refresh-token handling.
 - [ ] Add Zustand auth store.
@@ -85,3 +85,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Implemented task updates with partial validation and assignment checks.
 - 2026-05-21: Implemented task deletion with ownership and role rules.
 - 2026-05-21: Added backend API smoke checks for health, auth protection, and validation envelopes.
+- 2026-05-21: Configured Tailwind CSS v4, shadcn-style tokens, aliases, and base UI utilities.
