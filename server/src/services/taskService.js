@@ -86,6 +86,22 @@ export async function listTasksForUser(user, query) {
   };
 }
 
+export async function getTaskForUser(user, taskId) {
+  const task = await Task.findOne({
+    _id: taskId,
+    ...buildTaskAccessFilter(user),
+  })
+    .populate('createdBy', userPublicFields)
+    .populate('assignedTo', userPublicFields)
+    .lean();
+
+  if (!task) {
+    throw new ApiError(404, 'Task not found');
+  }
+
+  return task;
+}
+
 async function populateTaskUsers(task) {
   await task.populate([
     { path: 'createdBy', select: userPublicFields },

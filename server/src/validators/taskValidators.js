@@ -48,3 +48,9 @@ export const listTasksSchema = z.object({
     sortOrder: z.enum(['asc', 'desc']).default('desc'),
   }),
 });
+
+export const taskIdParamSchema = z.object({
+  params: z.object({
+    id: objectIdSchema,
+  }),
+});

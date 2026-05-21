@@ -1,4 +1,4 @@
-import { createTaskForUser, listTasksForUser } from '../services/taskService.js';
+import { createTaskForUser, getTaskForUser, listTasksForUser } from '../services/taskService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendSuccess } from '../utils/apiResponse.js';
 
@@ -23,5 +23,16 @@ export const listTasks = asyncHandler(async (req, res) => {
       tasks,
     },
     meta,
+  });
+});
+
+export const getTask = asyncHandler(async (req, res) => {
+  const task = await getTaskForUser(req.user, req.validated.params.id);
+
+  sendSuccess(res, {
+    message: 'Task loaded',
+    data: {
+      task,
+    },
   });
 });
