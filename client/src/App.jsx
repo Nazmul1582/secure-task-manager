@@ -10,6 +10,7 @@ import { LoginPage } from '@/pages/LoginPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { RegisterPage } from '@/pages/RegisterPage'
 import { SettingsPage } from '@/pages/SettingsPage'
+import { TaskFormPage } from '@/pages/TaskFormPage'
 import { TasksPage } from '@/pages/TasksPage'
 import { ProtectedRoute } from '@/routes/ProtectedRoute'
 import { useAuthStore } from '@/store/authStore'
@@ -54,6 +55,8 @@ function App() {
         <Route element={<AppLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/tasks/new" element={<TaskFormPage mode="create" />} />
+          <Route path="/tasks/:id/edit" element={<TaskFormPage mode="edit" />} />
           <Route path="/tasks/kanban" element={<KanbanPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>

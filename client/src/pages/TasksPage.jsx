@@ -1,5 +1,6 @@
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Pencil, Search } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -67,7 +68,9 @@ export function TasksPage() {
           <h1 className="text-2xl font-semibold">Tasks</h1>
           <p className="mt-1 text-sm text-muted-foreground">{summary}</p>
         </div>
-        <Button>Create task</Button>
+        <Button asChild>
+          <Link to="/tasks/new">Create task</Link>
+        </Button>
       </div>
 
       <section className="rounded-md border border-border bg-card p-4 shadow-sm">
@@ -155,6 +158,11 @@ export function TasksPage() {
                 <div className="flex shrink-0 flex-wrap gap-2">
                   <Badge tone={statusTone(task.status)}>{formatStatus(task.status)}</Badge>
                   <Badge tone={priorityTone(task.priority)}>{task.priority}</Badge>
+                  <Button asChild variant="ghost" size="icon">
+                    <Link aria-label={`Edit ${task.title}`} title="Edit task" to={`/tasks/${task._id}/edit`}>
+                      <Pencil className="size-4" aria-hidden="true" />
+                    </Link>
+                  </Button>
                 </div>
               </div>
 
