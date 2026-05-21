@@ -48,7 +48,7 @@ This file is the working checklist for building the project in small committed t
 
 - [x] Build register and login screens with form validation.
 - [x] Build dashboard overview and statistics.
-- [ ] Build task list with search, filters, sorting, and pagination.
+- [x] Build task list with search, filters, sorting, and pagination.
 - [ ] Build task create/edit flows.
 - [ ] Build Kanban board.
 - [ ] Add loading, toast, and empty states.
@@ -92,3 +92,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Added dark/light theme provider and icon toggle.
 - 2026-05-21: Built login and registration screens with React Hook Form and Zod validation.
 - 2026-05-21: Built dashboard statistics, completed-task chart, upcoming deadlines, and task store fetch.
+- 2026-05-21: Built task list view with search, filters, sorting, pagination, and API-backed states.

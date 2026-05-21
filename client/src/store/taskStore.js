@@ -25,7 +25,7 @@ export const useTaskStore = create((set, get) => ({
     set({ status: 'loading', error: null, filters })
 
     try {
-      const response = await tasksApi.list(filters)
+      const response = await tasksApi.list(cleanParams(filters))
       set({
         tasks: response.data.tasks,
         meta: response.meta,
@@ -43,3 +43,18 @@ export const useTaskStore = create((set, get) => ({
   },
 }))
 
+function cleanParams(params) {
+  return Object.fromEntries(
+    Object.entries(params).filter(([, value]) => {
+      if (value === '' || value === null || value === undefined) {
+        return false
+      }
+
+      if (Array.isArray(value) && value.length === 0) {
+        return false
+      }
+
+      return true
+    }),
+  )
+}
