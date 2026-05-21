@@ -17,6 +17,7 @@
     "lint:client": "npm --workspace client run lint",
     "lint:server": "npm --workspace server run lint",
     "smoke:server": "npm --workspace server run smoke",
+    "test:client": "npm --workspace client run test",
     "test:server": "npm --workspace server run test:api",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
