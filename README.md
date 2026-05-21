@@ -59,3 +59,21 @@ secureTaskManager/
 
 This repository is being built in small, committed milestones. See [TODO.md](./TODO.md) for the active implementation checklist.
 
+### Local Setup
+
+```bash
+npm install
+cp server/.env.example server/.env
+cp client/.env.example client/.env
+npm run dev
+```
+
+The frontend runs on `http://localhost:5173` and the backend API runs on `http://localhost:5000` by default.
+
+### Workspace Scripts
+
+- `npm run dev` starts the client and server together.
+- `npm run dev:client` starts only the Vite frontend.
+- `npm run dev:server` starts only the Express backend.
+- `npm run build` builds the frontend.
+- `npm run lint` runs workspace lint checks.
