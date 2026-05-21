@@ -1,4 +1,4 @@
-import { registerUser } from '../services/authService.js';
+import { loginUser, registerUser } from '../services/authService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { getRefreshCookieOptions, REFRESH_TOKEN_COOKIE_NAME } from '../utils/tokens.js';
 import { sendSuccess } from '../utils/apiResponse.js';
@@ -18,3 +18,16 @@ export const register = asyncHandler(async (req, res) => {
   });
 });
 
+export const login = asyncHandler(async (req, res) => {
+  const { accessToken, refreshToken, user } = await loginUser(req.validated.body, req);
+
+  res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, getRefreshCookieOptions());
+
+  sendSuccess(res, {
+    message: 'Login successful',
+    data: {
+      user,
+      accessToken,
+    },
+  });
+});

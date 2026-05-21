@@ -21,6 +21,23 @@ export async function registerUser(input, req) {
   return createAuthSession(user, req);
 }
 
+export async function loginUser(input, req) {
+  const email = input.email.toLowerCase();
+  const user = await User.findOne({ email }).select('+password +refreshTokens');
+
+  if (!user) {
+    throw new ApiError(401, 'Invalid email or password');
+  }
+
+  const passwordMatches = await user.comparePassword(input.password);
+
+  if (!passwordMatches) {
+    throw new ApiError(401, 'Invalid email or password');
+  }
+
+  return createAuthSession(user, req);
+}
+
 export async function createAuthSession(user, req) {
   const accessToken = signAccessToken(user);
   const refreshToken = signRefreshToken(user);
@@ -42,4 +59,3 @@ export async function createAuthSession(user, req) {
     refreshToken,
   };
 }
-
