@@ -77,3 +77,7 @@ The frontend runs on `http://localhost:5173` and the backend API runs on `http:/
 - `npm run dev:server` starts only the Express backend.
 - `npm run build` builds the frontend.
 - `npm run lint` runs workspace lint checks.
+
+## Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for production environment variables and hosting notes.

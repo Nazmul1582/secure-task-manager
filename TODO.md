@@ -58,7 +58,7 @@ This file is the working checklist for building the project in small committed t
 - [x] Add linting and formatting.
 - [x] Add backend API tests.
 - [x] Add frontend component and route tests.
-- [ ] Add production deployment notes.
+- [x] Add production deployment notes.
 - [ ] Push committed milestones to GitHub remote.
 
 ## Progress Log
@@ -99,3 +99,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Added shared formatting config and server ESLint.
 - 2026-05-21: Added backend API tests for health, auth protection, and validation.
 - 2026-05-21: Added frontend Vitest tests for login validation and protected route redirects.
+- 2026-05-21: Added production deployment notes for frontend, backend, MongoDB Atlas, and checks.
