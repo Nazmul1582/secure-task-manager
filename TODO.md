@@ -47,7 +47,7 @@ This file is the working checklist for building the project in small committed t
 ## Milestone 6: Frontend Features
 
 - [x] Build register and login screens with form validation.
-- [ ] Build dashboard overview and statistics.
+- [x] Build dashboard overview and statistics.
 - [ ] Build task list with search, filters, sorting, and pagination.
 - [ ] Build task create/edit flows.
 - [ ] Build Kanban board.
@@ -91,3 +91,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Added React Router routes, protected route guard, auth layout, and dashboard layout.
 - 2026-05-21: Added dark/light theme provider and icon toggle.
 - 2026-05-21: Built login and registration screens with React Hook Form and Zod validation.
+- 2026-05-21: Built dashboard statistics, completed-task chart, upcoming deadlines, and task store fetch.
