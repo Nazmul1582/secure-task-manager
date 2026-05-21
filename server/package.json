@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node --watch server.js",
     "start": "node server.js",
-    "lint": "node --check server.js && node --check src/app.js && node --check src/config/env.js && node --check src/config/database.js"
+    "lint": "node scripts/check-syntax.js"
   },
   "engines": {
     "node": ">=22.12.0"

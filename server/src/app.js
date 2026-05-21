@@ -6,6 +6,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import { env } from './config/env.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { notFound } from './middleware/notFound.js';
+import { sendSuccess } from './utils/apiResponse.js';
 
 const app = express();
 
@@ -32,12 +35,17 @@ app.use(cookieParser());
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 app.get('/api/health', (_req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    service: 'secure-task-manager-api',
-    environment: env.NODE_ENV,
-    timestamp: new Date().toISOString(),
+  sendSuccess(res, {
+    message: 'API is healthy',
+    data: {
+      service: 'secure-task-manager-api',
+      environment: env.NODE_ENV,
+      timestamp: new Date().toISOString(),
+    },
   });
 });
+
+app.use(notFound);
+app.use(errorHandler);
 
 export default app;
