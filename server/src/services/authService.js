@@ -139,6 +139,30 @@ export async function logoutAllSessions(userId) {
   await user.save({ validateBeforeSave: false });
 }
 
+export async function changeUserPassword(userId, input) {
+  const user = await User.findById(userId).select('+password +refreshTokens');
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  const passwordMatches = await user.comparePassword(input.currentPassword);
+
+  if (!passwordMatches) {
+    throw new ApiError(400, 'Current password is incorrect');
+  }
+
+  if (input.currentPassword === input.newPassword) {
+    throw new ApiError(400, 'New password must be different from the current password');
+  }
+
+  user.password = input.newPassword;
+  user.refreshTokens = [];
+  await user.save();
+
+  return user.toJSON();
+}
+
 async function saveRefreshSession(user, refreshToken, req) {
   const now = new Date();
 

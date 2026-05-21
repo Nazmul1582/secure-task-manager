@@ -24,7 +24,7 @@ This file is the working checklist for building the project in small committed t
 - [x] Implement login with refresh cookie.
 - [x] Implement refresh token rotation.
 - [x] Implement logout and logout-all session handling.
-- [ ] Implement current-user and change-password routes.
+- [x] Implement current-user and change-password routes.
 - [x] Add auth middleware and role authorization.
 
 ## Milestone 4: Task API
@@ -78,3 +78,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Implemented refresh-token rotation with session reuse detection.
 - 2026-05-21: Added access-token authentication middleware and role authorization guard.
 - 2026-05-21: Implemented single-session logout and logout-all session clearing.
+- 2026-05-21: Implemented current-user and secure change-password auth routes.

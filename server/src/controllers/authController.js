@@ -1,4 +1,11 @@
-import { loginUser, logoutAllSessions, logoutUser, registerUser, rotateRefreshSession } from '../services/authService.js';
+import {
+  changeUserPassword,
+  loginUser,
+  logoutAllSessions,
+  logoutUser,
+  registerUser,
+  rotateRefreshSession,
+} from '../services/authService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import {
   getClearRefreshCookieOptions,
@@ -68,5 +75,27 @@ export const logoutAll = asyncHandler(async (req, res) => {
 
   sendSuccess(res, {
     message: 'Logged out from all devices',
+  });
+});
+
+export const getMe = asyncHandler(async (req, res) => {
+  sendSuccess(res, {
+    message: 'Current user loaded',
+    data: {
+      user: req.user.toJSON(),
+    },
+  });
+});
+
+export const changePassword = asyncHandler(async (req, res) => {
+  const user = await changeUserPassword(req.user.id, req.validated.body);
+
+  res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, getClearRefreshCookieOptions());
+
+  sendSuccess(res, {
+    message: 'Password changed successfully. Please sign in again.',
+    data: {
+      user,
+    },
   });
 });
