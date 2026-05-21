@@ -5,7 +5,7 @@ This file is the working checklist for building the project in small committed t
 ## Milestone 1: Repository Foundation
 
 - [x] Initialize git repository and project documentation.
-- [ ] Add npm workspace root configuration.
+- [x] Add npm workspace root configuration.
 - [ ] Scaffold the Express backend package.
 - [ ] Scaffold the Vite React frontend package.
 - [ ] Add shared development scripts and environment examples.
@@ -64,4 +64,4 @@ This file is the working checklist for building the project in small committed t
 ## Progress Log
 
 - 2026-05-21: Created the initial repository roadmap and documentation.
-
+- 2026-05-21: Added the npm workspace root configuration.

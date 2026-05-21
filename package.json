@@ -1,0 +1,38 @@
+{
+  "name": "secure-task-manager",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Secure full-stack task management app with React, Express, MongoDB, and JWT auth.",
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c cyan,magenta \"npm --workspace server run dev\" \"npm --workspace client run dev\"",
+    "dev:client": "npm --workspace client run dev",
+    "dev:server": "npm --workspace server run dev",
+    "build": "npm --workspace client run build",
+    "lint": "npm run lint:server && npm run lint:client",
+    "lint:client": "npm --workspace client run lint",
+    "lint:server": "npm --workspace server run lint",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "react",
+    "express",
+    "mongodb",
+    "jwt",
+    "task-manager"
+  ],
+  "author": "Md. Nazmul Hasan",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0",
+    "npm": ">=11.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "prettier": "^3.8.3"
+  }
+}
