@@ -54,7 +54,13 @@ export function DashboardPage() {
                 <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={12} />
                 <YAxis allowDecimals={false} tickLine={false} axisLine={false} fontSize={12} />
                 <Tooltip contentStyle={{ borderRadius: 8, borderColor: 'var(--border)' }} />
-                <Area type="monotone" dataKey="completed" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.16} />
+                <Area
+                  type="monotone"
+                  dataKey="completed"
+                  stroke="var(--primary)"
+                  fill="var(--primary)"
+                  fillOpacity={0.16}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>

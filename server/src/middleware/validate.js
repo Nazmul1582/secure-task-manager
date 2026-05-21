@@ -1,4 +1,4 @@
-import { ApiError } from '../utils/apiError.js';
+import { ApiError } from '../utils/apiError.js'
 
 export function validate(schema) {
   return (req, _res, next) => {
@@ -6,19 +6,18 @@ export function validate(schema) {
       body: req.body,
       params: req.params,
       query: req.query,
-    });
+    })
 
     if (!result.success) {
       const errors = result.error.issues.map((issue) => ({
         path: issue.path.join('.'),
         message: issue.message,
-      }));
+      }))
 
-      return next(new ApiError(400, 'Validation failed', errors));
+      return next(new ApiError(400, 'Validation failed', errors))
     }
 
-    req.validated = result.data;
-    return next();
-  };
+    req.validated = result.data
+    return next()
+  }
 }
-

@@ -1,11 +1,11 @@
-import dotenv from 'dotenv';
-import { z } from 'zod';
+import dotenv from 'dotenv'
+import { z } from 'zod'
 
-dotenv.config({ quiet: true });
+dotenv.config({ quiet: true })
 
 const booleanFromString = z
   .union([z.boolean(), z.string()])
-  .transform((value) => (typeof value === 'boolean' ? value : value === 'true'));
+  .transform((value) => (typeof value === 'boolean' ? value : value === 'true'))
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -18,13 +18,15 @@ const envSchema = z.object({
   REFRESH_TOKEN_EXPIRES: z.string().default('7d'),
   COOKIE_SECURE: booleanFromString.default(false),
   COOKIE_SAME_SITE: z.enum(['strict', 'lax', 'none']).default('lax'),
-});
+})
 
-const parsedEnv = envSchema.safeParse(process.env);
+const parsedEnv = envSchema.safeParse(process.env)
 
 if (!parsedEnv.success) {
-  const details = parsedEnv.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`).join('\n');
-  throw new Error(`Invalid environment configuration:\n${details}`);
+  const details = parsedEnv.error.issues
+    .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+    .join('\n')
+  throw new Error(`Invalid environment configuration:\n${details}`)
 }
 
-export const env = parsedEnv.data;
+export const env = parsedEnv.data

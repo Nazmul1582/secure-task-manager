@@ -23,4 +23,3 @@ export const authApi = {
     return http.post('/auth/change-password', payload).then(unwrap)
   },
 }
-

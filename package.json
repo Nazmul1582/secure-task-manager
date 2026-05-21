@@ -17,7 +17,8 @@
     "lint:client": "npm --workspace client run lint",
     "lint:server": "npm --workspace server run lint",
     "smoke:server": "npm --workspace server run smoke",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [
     "react",
@@ -33,7 +34,10 @@
     "npm": ">=11.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "concurrently": "^9.2.1",
+    "eslint": "^10.4.0",
+    "globals": "^17.6.0",
     "prettier": "^3.8.3"
   }
 }

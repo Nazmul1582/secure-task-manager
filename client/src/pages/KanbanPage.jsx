@@ -74,7 +74,12 @@ export function KanbanPage() {
       <DndContext onDragEnd={handleDragEnd}>
         <div className="grid gap-4 xl:grid-cols-4">
           {columns.map((column) => (
-            <KanbanColumn key={column.status} column={column} tasks={groupedTasks[column.status] || []} loading={status === 'loading'} />
+            <KanbanColumn
+              key={column.status}
+              column={column}
+              tasks={groupedTasks[column.status] || []}
+              loading={status === 'loading'}
+            />
           ))}
         </div>
       </DndContext>
@@ -97,13 +102,17 @@ function KanbanColumn({ column, tasks, loading }) {
     >
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold">{column.label}</h2>
-        <span className="rounded-md bg-secondary px-2 py-1 text-xs text-secondary-foreground">{tasks.length}</span>
+        <span className="rounded-md bg-secondary px-2 py-1 text-xs text-secondary-foreground">
+          {tasks.length}
+        </span>
       </div>
 
       <div className="space-y-3">
         {loading && <p className="text-sm text-muted-foreground">Loading...</p>}
         {!loading && tasks.length === 0 && (
-          <p className="rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">No tasks.</p>
+          <p className="rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+            No tasks.
+          </p>
         )}
         {!loading && tasks.map((task) => <KanbanCard key={task._id} task={task} />)}
       </div>
@@ -141,7 +150,10 @@ function KanbanCard({ task }) {
           <GripVertical className="size-4" aria-hidden="true" />
         </button>
         <div className="min-w-0 flex-1">
-          <Link to={`/tasks/${task._id}/edit`} className="block truncate text-sm font-medium hover:text-primary">
+          <Link
+            to={`/tasks/${task._id}/edit`}
+            className="block truncate text-sm font-medium hover:text-primary"
+          >
             {task.title}
           </Link>
           <p className="mt-1 text-xs capitalize text-muted-foreground">{task.priority}</p>

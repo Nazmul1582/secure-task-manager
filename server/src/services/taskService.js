@@ -1,13 +1,13 @@
-import { USER_ROLES, User } from '../models/User.js';
-import { Task } from '../models/Task.js';
-import { ApiError } from '../utils/apiError.js';
+import { USER_ROLES, User } from '../models/User.js'
+import { Task } from '../models/Task.js'
+import { ApiError } from '../utils/apiError.js'
 
-const userPublicFields = 'name email avatar role';
+const userPublicFields = 'name email avatar role'
 
 export async function createTaskForUser(user, input) {
-  const assignedTo = input.assignedTo || user.id;
+  const assignedTo = input.assignedTo || user.id
 
-  await assertCanAssignTask(user, assignedTo);
+  await assertCanAssignTask(user, assignedTo)
 
   const task = await Task.create({
     title: input.title,
@@ -18,43 +18,43 @@ export async function createTaskForUser(user, input) {
     tags: input.tags,
     assignedTo,
     createdBy: user._id,
-  });
+  })
 
-  await populateTaskUsers(task);
-  return task.toJSON();
+  await populateTaskUsers(task)
+  return task.toJSON()
 }
 
 export async function listTasksForUser(user, query) {
   const filter = {
     ...buildTaskAccessFilter(user),
-  };
+  }
 
   if (query.status) {
-    filter.status = query.status;
+    filter.status = query.status
   }
 
   if (query.priority) {
-    filter.priority = query.priority;
+    filter.priority = query.priority
   }
 
   if (query.assignedTo) {
-    filter.assignedTo = query.assignedTo;
+    filter.assignedTo = query.assignedTo
   }
 
   if (query.tags?.length) {
-    filter.tags = { $all: query.tags.map((tag) => tag.trim().toLowerCase()) };
+    filter.tags = { $all: query.tags.map((tag) => tag.trim().toLowerCase()) }
   }
 
   if (query.search) {
-    filter.$text = { $search: query.search };
+    filter.$text = { $search: query.search }
   }
 
-  const skip = (query.page - 1) * query.limit;
-  const sortDirection = query.sortOrder === 'asc' ? 1 : -1;
-  const projection = query.search ? { score: { $meta: 'textScore' } } : undefined;
+  const skip = (query.page - 1) * query.limit
+  const sortDirection = query.sortOrder === 'asc' ? 1 : -1
+  const projection = query.search ? { score: { $meta: 'textScore' } } : undefined
   const sort = query.search
     ? { score: { $meta: 'textScore' }, [query.sortBy]: sortDirection }
-    : { [query.sortBy]: sortDirection };
+    : { [query.sortBy]: sortDirection }
 
   const [tasks, total] = await Promise.all([
     Task.find(filter, projection)
@@ -65,7 +65,7 @@ export async function listTasksForUser(user, query) {
       .limit(query.limit)
       .lean(),
     Task.countDocuments(filter),
-  ]);
+  ])
 
   return {
     tasks,
@@ -75,7 +75,7 @@ export async function listTasksForUser(user, query) {
       total,
       totalPages: Math.ceil(total / query.limit) || 1,
     },
-  };
+  }
 }
 
 export async function getTaskForUser(user, taskId) {
@@ -85,83 +85,83 @@ export async function getTaskForUser(user, taskId) {
   })
     .populate('createdBy', userPublicFields)
     .populate('assignedTo', userPublicFields)
-    .lean();
+    .lean()
 
   if (!task) {
-    throw new ApiError(404, 'Task not found');
+    throw new ApiError(404, 'Task not found')
   }
 
-  return task;
+  return task
 }
 
 export async function updateTaskForUser(user, taskId, input) {
   const task = await Task.findOne({
     _id: taskId,
     ...buildTaskAccessFilter(user),
-  });
+  })
 
   if (!task) {
-    throw new ApiError(404, 'Task not found');
+    throw new ApiError(404, 'Task not found')
   }
 
   if (Object.hasOwn(input, 'assignedTo')) {
-    await assertCanAssignTask(user, input.assignedTo);
+    await assertCanAssignTask(user, input.assignedTo)
   }
 
   for (const field of ['title', 'description', 'status', 'priority', 'dueDate', 'tags', 'assignedTo']) {
     if (Object.hasOwn(input, field)) {
-      task[field] = input[field];
+      task[field] = input[field]
     }
   }
 
-  await task.save();
-  await populateTaskUsers(task);
+  await task.save()
+  await populateTaskUsers(task)
 
-  return task.toJSON();
+  return task.toJSON()
 }
 
 export async function deleteTaskForUser(user, taskId) {
   const task = await Task.findOne({
     _id: taskId,
     ...buildTaskAccessFilter(user),
-  });
+  })
 
   if (!task) {
-    throw new ApiError(404, 'Task not found');
+    throw new ApiError(404, 'Task not found')
   }
 
-  await task.deleteOne();
+  await task.deleteOne()
 }
 
 async function populateTaskUsers(task) {
   await task.populate([
     { path: 'createdBy', select: userPublicFields },
     { path: 'assignedTo', select: userPublicFields },
-  ]);
+  ])
 }
 
 function buildTaskAccessFilter(user) {
   if (user.role === USER_ROLES.ADMIN) {
-    return {};
+    return {}
   }
 
   return {
     $or: [{ createdBy: user._id }, { assignedTo: user._id }],
-  };
+  }
 }
 
 async function assertCanAssignTask(user, assignedTo) {
   if (!assignedTo) {
-    return;
+    return
   }
 
   if (user.role !== USER_ROLES.ADMIN && assignedTo !== user.id) {
-    throw new ApiError(403, 'Members can only assign tasks to themselves');
+    throw new ApiError(403, 'Members can only assign tasks to themselves')
   }
 
-  const assigneeExists = await User.exists({ _id: assignedTo });
+  const assigneeExists = await User.exists({ _id: assignedTo })
 
   if (!assigneeExists) {
-    throw new ApiError(400, 'Assigned user does not exist');
+    throw new ApiError(400, 'Assigned user does not exist')
   }
 }

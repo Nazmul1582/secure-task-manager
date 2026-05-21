@@ -17,4 +17,3 @@ export const tasksApi = {
     return http.delete(`/tasks/${id}`).then(unwrap)
   },
 }
-

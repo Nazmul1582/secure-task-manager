@@ -1,27 +1,26 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-import { env } from './env.js';
+import { env } from './env.js'
 
-mongoose.set('sanitizeFilter', true);
+mongoose.set('sanitizeFilter', true)
 
-let connectionPromise;
+let connectionPromise
 
 export async function connectDatabase() {
   if (!connectionPromise) {
     connectionPromise = mongoose.connect(env.MONGO_URI, {
       autoIndex: env.NODE_ENV !== 'production',
-    });
+    })
   }
 
-  const connection = await connectionPromise;
-  console.log(`MongoDB connected: ${connection.connection.host}/${connection.connection.name}`);
+  const connection = await connectionPromise
+  console.log(`MongoDB connected: ${connection.connection.host}/${connection.connection.name}`)
 
-  return connection;
+  return connection
 }
 
 export async function disconnectDatabase() {
   if (mongoose.connection.readyState !== 0) {
-    await mongoose.disconnect();
+    await mongoose.disconnect()
   }
 }
-

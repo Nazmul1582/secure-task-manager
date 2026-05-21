@@ -4,12 +4,12 @@ import {
   getTaskForUser,
   listTasksForUser,
   updateTaskForUser,
-} from '../services/taskService.js';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { sendSuccess } from '../utils/apiResponse.js';
+} from '../services/taskService.js'
+import { asyncHandler } from '../utils/asyncHandler.js'
+import { sendSuccess } from '../utils/apiResponse.js'
 
 export const createTask = asyncHandler(async (req, res) => {
-  const task = await createTaskForUser(req.user, req.validated.body);
+  const task = await createTaskForUser(req.user, req.validated.body)
 
   sendSuccess(res, {
     statusCode: 201,
@@ -17,11 +17,11 @@ export const createTask = asyncHandler(async (req, res) => {
     data: {
       task,
     },
-  });
-});
+  })
+})
 
 export const listTasks = asyncHandler(async (req, res) => {
-  const { tasks, meta } = await listTasksForUser(req.user, req.validated.query);
+  const { tasks, meta } = await listTasksForUser(req.user, req.validated.query)
 
   sendSuccess(res, {
     message: 'Tasks loaded',
@@ -29,35 +29,35 @@ export const listTasks = asyncHandler(async (req, res) => {
       tasks,
     },
     meta,
-  });
-});
+  })
+})
 
 export const getTask = asyncHandler(async (req, res) => {
-  const task = await getTaskForUser(req.user, req.validated.params.id);
+  const task = await getTaskForUser(req.user, req.validated.params.id)
 
   sendSuccess(res, {
     message: 'Task loaded',
     data: {
       task,
     },
-  });
-});
+  })
+})
 
 export const updateTask = asyncHandler(async (req, res) => {
-  const task = await updateTaskForUser(req.user, req.validated.params.id, req.validated.body);
+  const task = await updateTaskForUser(req.user, req.validated.params.id, req.validated.body)
 
   sendSuccess(res, {
     message: 'Task updated',
     data: {
       task,
     },
-  });
-});
+  })
+})
 
 export const deleteTask = asyncHandler(async (req, res) => {
-  await deleteTaskForUser(req.user, req.validated.params.id);
+  await deleteTaskForUser(req.user, req.validated.params.id)
 
   sendSuccess(res, {
     message: 'Task deleted',
-  });
-});
+  })
+})

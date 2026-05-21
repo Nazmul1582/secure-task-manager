@@ -14,4 +14,3 @@ function Input({ className, type = 'text', ...props }) {
 }
 
 export { Input }
-

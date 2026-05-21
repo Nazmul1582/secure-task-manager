@@ -18,4 +18,3 @@ export function onAccessTokenChange(listener) {
   listeners.add(listener)
   return () => listeners.delete(listener)
 }
-

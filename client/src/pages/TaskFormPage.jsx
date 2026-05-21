@@ -43,7 +43,9 @@ export function TaskFormPage({ mode }) {
 
   useEffect(() => {
     if (isEdit && id) {
-      getTask(id).then((task) => reset(getDefaultValues(task))).catch(() => {})
+      getTask(id)
+        .then((task) => reset(getDefaultValues(task)))
+        .catch(() => {})
     }
   }, [getTask, id, isEdit, reset])
 
@@ -83,7 +85,10 @@ export function TaskFormPage({ mode }) {
         </div>
       </div>
 
-      <form className="space-y-5 rounded-md border border-border bg-card p-5 shadow-sm" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="space-y-5 rounded-md border border-border bg-card p-5 shadow-sm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Field label="Title" error={errors.title?.message}>
           <Input {...register('title')} />
         </Field>
@@ -97,7 +102,10 @@ export function TaskFormPage({ mode }) {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Status" error={errors.status?.message}>
-            <select className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" {...register('status')}>
+            <select
+              className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              {...register('status')}
+            >
               <option value="todo">Todo</option>
               <option value="in-progress">In progress</option>
               <option value="review">Review</option>
@@ -106,7 +114,10 @@ export function TaskFormPage({ mode }) {
           </Field>
 
           <Field label="Priority" error={errors.priority?.message}>
-            <select className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" {...register('priority')}>
+            <select
+              className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              {...register('priority')}
+            >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>

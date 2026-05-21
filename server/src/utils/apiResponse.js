@@ -3,12 +3,11 @@ export function sendSuccess(res, { statusCode = 200, message = 'Success', data =
     success: true,
     message,
     data,
-  };
-
-  if (meta) {
-    payload.meta = meta;
   }
 
-  return res.status(statusCode).json(payload);
-}
+  if (meta) {
+    payload.meta = meta
+  }
 
+  return res.status(statusCode).json(payload)
+}

@@ -1,10 +1,10 @@
-import bcrypt from 'bcryptjs';
-import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs'
+import mongoose from 'mongoose'
 
 export const USER_ROLES = {
   ADMIN: 'admin',
   MEMBER: 'member',
-};
+}
 
 const refreshTokenSchema = new mongoose.Schema(
   {
@@ -29,7 +29,7 @@ const refreshTokenSchema = new mongoose.Schema(
     _id: true,
     timestamps: true,
   },
-);
+)
 
 const userSchema = new mongoose.Schema(
   {
@@ -75,29 +75,29 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: {
       transform(_doc, ret) {
-        delete ret.password;
-        delete ret.refreshTokens;
-        delete ret.__v;
-        return ret;
+        delete ret.password
+        delete ret.refreshTokens
+        delete ret.__v
+        return ret
       },
     },
   },
-);
+)
 
-userSchema.index({ role: 1 });
+userSchema.index({ role: 1 })
 
 userSchema.pre('save', async function hashPassword(next) {
   if (!this.isModified('password')) {
-    return next();
+    return next()
   }
 
-  const salt = await bcrypt.genSalt(12);
-  this.password = await bcrypt.hash(this.password, salt);
-  return next();
-});
+  const salt = await bcrypt.genSalt(12)
+  this.password = await bcrypt.hash(this.password, salt)
+  return next()
+})
 
 userSchema.methods.comparePassword = function comparePassword(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
+  return bcrypt.compare(candidatePassword, this.password)
+}
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', userSchema)

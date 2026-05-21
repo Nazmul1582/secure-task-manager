@@ -55,7 +55,7 @@ This file is the working checklist for building the project in small committed t
 
 ## Milestone 7: Quality And Delivery
 
-- [ ] Add linting and formatting.
+- [x] Add linting and formatting.
 - [ ] Add backend API tests.
 - [ ] Add frontend component and route tests.
 - [ ] Add production deployment notes.
@@ -96,3 +96,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Built task create and edit routes, forms, validation, and store mutations.
 - 2026-05-21: Built drag-and-drop Kanban board with API-backed status updates.
 - 2026-05-21: Added toast notifications for auth, task save, task move, and logout flows.
+- 2026-05-21: Added shared formatting config and server ESLint.

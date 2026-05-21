@@ -76,7 +76,10 @@ export function TasksPage() {
       <section className="rounded-md border border-border bg-card p-4 shadow-sm">
         <form className="grid gap-3 lg:grid-cols-[1fr_170px_170px_170px_130px]" onSubmit={submitSearch}>
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               value={searchInput}
               onChange={(event) => setSearchInput(event.target.value)}
@@ -153,7 +156,9 @@ export function TasksPage() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
                   <h2 className="truncate text-base font-semibold">{task.title}</h2>
-                  {task.description && <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{task.description}</p>}
+                  {task.description && (
+                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{task.description}</p>
+                  )}
                 </div>
                 <div className="flex shrink-0 flex-wrap gap-2">
                   <Badge tone={statusTone(task.status)}>{formatStatus(task.status)}</Badge>
@@ -209,11 +214,7 @@ export function TasksPage() {
 }
 
 function Badge({ children, tone }) {
-  return (
-    <span className={cn('rounded-md px-2 py-1 text-xs font-medium capitalize', tone)}>
-      {children}
-    </span>
-  )
+  return <span className={cn('rounded-md px-2 py-1 text-xs font-medium capitalize', tone)}>{children}</span>
 }
 
 function statusTone(status) {

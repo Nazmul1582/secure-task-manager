@@ -14,7 +14,9 @@ export function AuthLayout() {
           secureTaskManager
         </div>
         <div className="max-w-xl">
-          <p className="text-3xl font-semibold leading-tight">Plan work, protect sessions, ship with confidence.</p>
+          <p className="text-3xl font-semibold leading-tight">
+            Plan work, protect sessions, ship with confidence.
+          </p>
           <p className="mt-4 text-sm leading-6 text-muted-foreground">
             A focused workspace for task ownership, deadlines, priorities, and secure account access.
           </p>

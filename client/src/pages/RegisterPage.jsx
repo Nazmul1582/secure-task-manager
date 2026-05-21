@@ -64,13 +64,19 @@ export function RegisterPage() {
     <div className="w-full max-w-sm">
       <h1 className="text-2xl font-semibold">Create account</h1>
       <p className="mt-2 text-sm text-muted-foreground">Start with a member workspace.</p>
-      <form className="mt-6 space-y-4 rounded-md border border-border bg-card p-5 shadow-sm" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="mt-6 space-y-4 rounded-md border border-border bg-card p-5 shadow-sm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className="space-y-2">
           <label className="text-sm font-medium" htmlFor="name">
             Name
           </label>
           <div className="relative">
-            <User className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <User
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input id="name" autoComplete="name" className="pl-9" {...register('name')} />
           </div>
           {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
@@ -81,8 +87,17 @@ export function RegisterPage() {
             Email
           </label>
           <div className="relative">
-            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-            <Input id="register-email" type="email" autoComplete="email" className="pl-9" {...register('email')} />
+            <Mail
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              id="register-email"
+              type="email"
+              autoComplete="email"
+              className="pl-9"
+              {...register('email')}
+            />
           </div>
           {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
         </div>
@@ -92,8 +107,17 @@ export function RegisterPage() {
             Password
           </label>
           <div className="relative">
-            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-            <Input id="register-password" type="password" autoComplete="new-password" className="pl-9" {...register('password')} />
+            <Lock
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              id="register-password"
+              type="password"
+              autoComplete="new-password"
+              className="pl-9"
+              {...register('password')}
+            />
           </div>
           {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
         </div>
@@ -102,8 +126,15 @@ export function RegisterPage() {
           <label className="text-sm font-medium" htmlFor="confirm-password">
             Confirm password
           </label>
-          <Input id="confirm-password" type="password" autoComplete="new-password" {...register('confirmPassword')} />
-          {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>}
+          <Input
+            id="confirm-password"
+            type="password"
+            autoComplete="new-password"
+            {...register('confirmPassword')}
+          />
+          {errors.confirmPassword && (
+            <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
+          )}
         </div>
 
         {errors.root && <p className="text-sm text-destructive">{errors.root.message}</p>}

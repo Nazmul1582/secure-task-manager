@@ -1,18 +1,18 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 export const TASK_STATUSES = {
   TODO: 'todo',
   IN_PROGRESS: 'in-progress',
   REVIEW: 'review',
   DONE: 'done',
-};
+}
 
 export const TASK_PRIORITIES = {
   LOW: 'low',
   MEDIUM: 'medium',
   HIGH: 'high',
   URGENT: 'urgent',
-};
+}
 
 const taskSchema = new mongoose.Schema(
   {
@@ -48,10 +48,10 @@ const taskSchema = new mongoose.Schema(
       default: [],
       set(tags) {
         if (!Array.isArray(tags)) {
-          return [];
+          return []
         }
 
-        return [...new Set(tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))];
+        return [...new Set(tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))]
       },
     },
     assignedTo: {
@@ -69,17 +69,17 @@ const taskSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: {
       transform(_doc, ret) {
-        delete ret.__v;
-        return ret;
+        delete ret.__v
+        return ret
       },
     },
   },
-);
+)
 
-taskSchema.index({ createdBy: 1, status: 1 });
-taskSchema.index({ createdBy: 1, priority: 1 });
-taskSchema.index({ createdBy: 1, dueDate: 1 });
-taskSchema.index({ assignedTo: 1, status: 1 });
-taskSchema.index({ title: 'text', description: 'text', tags: 'text' });
+taskSchema.index({ createdBy: 1, status: 1 })
+taskSchema.index({ createdBy: 1, priority: 1 })
+taskSchema.index({ createdBy: 1, dueDate: 1 })
+taskSchema.index({ assignedTo: 1, status: 1 })
+taskSchema.index({ title: 'text', description: 'text', tags: 'text' })
 
-export const Task = mongoose.model('Task', taskSchema);
+export const Task = mongoose.model('Task', taskSchema)
