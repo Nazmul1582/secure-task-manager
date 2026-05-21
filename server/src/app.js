@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import { env } from './config/env.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { notFound } from './middleware/notFound.js';
+import authRoutes from './routes/authRoutes.js';
 import { sendSuccess } from './utils/apiResponse.js';
 
 const app = express();
@@ -44,6 +45,8 @@ app.get('/api/health', (_req, res) => {
     },
   });
 });
+
+app.use('/api/auth', authRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

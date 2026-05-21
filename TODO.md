@@ -20,7 +20,7 @@ This file is the working checklist for building the project in small committed t
 
 ## Milestone 3: Authentication API
 
-- [ ] Implement registration.
+- [x] Implement registration.
 - [ ] Implement login with refresh cookie.
 - [ ] Implement refresh token rotation.
 - [ ] Implement logout and logout-all session handling.
@@ -73,3 +73,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Added backend async, response, validation, and error handling helpers.
 - 2026-05-21: Added User and Task Mongoose models with auth/session and task indexes.
 - 2026-05-21: Added JWT signing, verification, hashing, cookie, and expiry utilities.
+- 2026-05-21: Implemented registration with validation, JWT issuance, refresh cookie, and session storage.
