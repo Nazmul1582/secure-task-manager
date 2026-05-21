@@ -16,6 +16,7 @@
     "lint": "npm run lint:server && npm run lint:client",
     "lint:client": "npm --workspace client run lint",
     "lint:server": "npm --workspace server run lint",
+    "smoke:server": "npm --workspace server run smoke",
     "format": "prettier --write ."
   },
   "keywords": [

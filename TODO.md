@@ -34,7 +34,7 @@ This file is the working checklist for building the project in small committed t
 - [x] Implement task detail lookup with ownership rules.
 - [x] Implement task update.
 - [x] Implement task deletion.
-- [ ] Add task validation and API smoke checks.
+- [x] Add task validation and API smoke checks.
 
 ## Milestone 5: Frontend Core
 
@@ -84,3 +84,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Implemented task detail lookup with ownership and role rules.
 - 2026-05-21: Implemented task updates with partial validation and assignment checks.
 - 2026-05-21: Implemented task deletion with ownership and role rules.
+- 2026-05-21: Added backend API smoke checks for health, auth protection, and validation envelopes.
