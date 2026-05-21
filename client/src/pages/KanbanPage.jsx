@@ -3,6 +3,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -44,7 +45,12 @@ export function KanbanPage() {
       return
     }
 
-    await updateTask(taskId, { status: nextStatus })
+    try {
+      await updateTask(taskId, { status: nextStatus })
+      toast.success('Task moved')
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Unable to move task')
+    }
   }
 
   return (

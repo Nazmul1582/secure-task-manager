@@ -1,5 +1,6 @@
 import { LayoutDashboard, ListTodo, LogOut, PanelsTopLeft, Settings, ShieldCheck } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -16,6 +17,11 @@ const navigation = [
 export function AppLayout() {
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
+
+  async function handleLogout() {
+    await logout()
+    toast.success('Signed out')
+  }
 
   return (
     <main className="min-h-svh bg-background text-foreground">
@@ -56,7 +62,7 @@ export function AppLayout() {
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />
-              <Button variant="ghost" size="sm" onClick={logout}>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
                 <LogOut className="size-4" aria-hidden="true" />
                 Logout
               </Button>

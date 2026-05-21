@@ -3,6 +3,7 @@ import { Lock, Mail } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -38,8 +39,10 @@ export function LoginPage() {
   async function onSubmit(values) {
     try {
       await login(values)
+      toast.success('Signed in successfully')
       navigate(from, { replace: true })
     } catch (error) {
+      toast.error(error.response?.data?.message || 'Unable to sign in')
       setError('root', {
         message: error.response?.data?.message || 'Unable to sign in',
       })

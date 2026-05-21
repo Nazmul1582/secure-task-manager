@@ -3,6 +3,7 @@ import { ArrowLeft, Save } from 'lucide-react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -56,8 +57,10 @@ export function TaskFormPage({ mode }) {
         await createTask(payload)
       }
 
+      toast.success(isEdit ? 'Task updated' : 'Task created')
       navigate('/tasks')
     } catch (error) {
+      toast.error(error.response?.data?.message || 'Unable to save task')
       setError('root', {
         message: error.response?.data?.message || 'Unable to save task',
       })

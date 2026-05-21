@@ -3,6 +3,7 @@ import { Lock, Mail, User } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -49,8 +50,10 @@ export function RegisterPage() {
         email: values.email,
         password: values.password,
       })
+      toast.success('Account created')
       navigate('/', { replace: true })
     } catch (error) {
+      toast.error(error.response?.data?.message || 'Unable to create account')
       setError('root', {
         message: error.response?.data?.message || 'Unable to create account',
       })
