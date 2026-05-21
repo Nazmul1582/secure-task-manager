@@ -1,6 +1,12 @@
 import { User } from '../models/User.js';
 import { ApiError } from '../utils/apiError.js';
-import { expiresInToDate, hashToken, signAccessToken, signRefreshToken } from '../utils/tokens.js';
+import {
+  expiresInToDate,
+  hashToken,
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} from '../utils/tokens.js';
 
 export async function registerUser(input, req) {
   const email = input.email.toLowerCase();
@@ -41,6 +47,64 @@ export async function loginUser(input, req) {
 export async function createAuthSession(user, req) {
   const accessToken = signAccessToken(user);
   const refreshToken = signRefreshToken(user);
+
+  await saveRefreshSession(user, refreshToken, req);
+
+  return {
+    user: user.toJSON(),
+    accessToken,
+    refreshToken,
+  };
+}
+
+export async function rotateRefreshSession(refreshToken, req) {
+  if (!refreshToken) {
+    throw new ApiError(401, 'Refresh token is required');
+  }
+
+  let payload;
+
+  try {
+    payload = verifyRefreshToken(refreshToken);
+  } catch {
+    throw new ApiError(401, 'Refresh token is invalid or expired');
+  }
+
+  const user = await User.findById(payload.sub).select('+refreshTokens');
+
+  if (!user) {
+    throw new ApiError(401, 'Refresh token is invalid or expired');
+  }
+
+  const now = new Date();
+  const currentTokenHash = hashToken(refreshToken);
+  const currentSession = user.refreshTokens.find(
+    (session) => session.tokenHash === currentTokenHash && session.expiresAt > now,
+  );
+
+  if (!currentSession) {
+    user.refreshTokens = [];
+    await user.save({ validateBeforeSave: false });
+    throw new ApiError(401, 'Refresh token reuse detected. Please sign in again.');
+  }
+
+  user.refreshTokens = user.refreshTokens.filter(
+    (session) => session.tokenHash !== currentTokenHash && session.expiresAt > now,
+  );
+
+  const accessToken = signAccessToken(user);
+  const newRefreshToken = signRefreshToken(user);
+
+  await saveRefreshSession(user, newRefreshToken, req);
+
+  return {
+    user: user.toJSON(),
+    accessToken,
+    refreshToken: newRefreshToken,
+  };
+}
+
+async function saveRefreshSession(user, refreshToken, req) {
   const now = new Date();
 
   user.refreshTokens = user.refreshTokens.filter((session) => session.expiresAt > now);
@@ -52,10 +116,4 @@ export async function createAuthSession(user, req) {
   });
 
   await user.save({ validateBeforeSave: false });
-
-  return {
-    user: user.toJSON(),
-    accessToken,
-    refreshToken,
-  };
 }

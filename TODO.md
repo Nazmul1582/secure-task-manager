@@ -22,7 +22,7 @@ This file is the working checklist for building the project in small committed t
 
 - [x] Implement registration.
 - [x] Implement login with refresh cookie.
-- [ ] Implement refresh token rotation.
+- [x] Implement refresh token rotation.
 - [ ] Implement logout and logout-all session handling.
 - [ ] Implement current-user and change-password routes.
 - [ ] Add auth middleware and role authorization.
@@ -75,3 +75,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Added JWT signing, verification, hashing, cookie, and expiry utilities.
 - 2026-05-21: Implemented registration with validation, JWT issuance, refresh cookie, and session storage.
 - 2026-05-21: Implemented login with bcrypt password verification and refresh cookie issuance.
+- 2026-05-21: Implemented refresh-token rotation with session reuse detection.
