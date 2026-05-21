@@ -120,6 +120,19 @@ export async function updateTaskForUser(user, taskId, input) {
   return task.toJSON();
 }
 
+export async function deleteTaskForUser(user, taskId) {
+  const task = await Task.findOne({
+    _id: taskId,
+    ...buildTaskAccessFilter(user),
+  });
+
+  if (!task) {
+    throw new ApiError(404, 'Task not found');
+  }
+
+  await task.deleteOne();
+}
+
 async function populateTaskUsers(task) {
   await task.populate([
     { path: 'createdBy', select: userPublicFields },

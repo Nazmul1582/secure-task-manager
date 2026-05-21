@@ -1,4 +1,10 @@
-import { createTaskForUser, getTaskForUser, listTasksForUser, updateTaskForUser } from '../services/taskService.js';
+import {
+  createTaskForUser,
+  deleteTaskForUser,
+  getTaskForUser,
+  listTasksForUser,
+  updateTaskForUser,
+} from '../services/taskService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendSuccess } from '../utils/apiResponse.js';
 
@@ -45,5 +51,13 @@ export const updateTask = asyncHandler(async (req, res) => {
     data: {
       task,
     },
+  });
+});
+
+export const deleteTask = asyncHandler(async (req, res) => {
+  await deleteTaskForUser(req.user, req.validated.params.id);
+
+  sendSuccess(res, {
+    message: 'Task deleted',
   });
 });

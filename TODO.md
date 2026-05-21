@@ -33,7 +33,7 @@ This file is the working checklist for building the project in small committed t
 - [x] Implement task listing with pagination, filters, search, and sorting.
 - [x] Implement task detail lookup with ownership rules.
 - [x] Implement task update.
-- [ ] Implement task deletion.
+- [x] Implement task deletion.
 - [ ] Add task validation and API smoke checks.
 
 ## Milestone 5: Frontend Core
@@ -83,3 +83,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Implemented task listing with pagination, filters, search, sorting, and role-aware visibility.
 - 2026-05-21: Implemented task detail lookup with ownership and role rules.
 - 2026-05-21: Implemented task updates with partial validation and assignment checks.
+- 2026-05-21: Implemented task deletion with ownership and role rules.
