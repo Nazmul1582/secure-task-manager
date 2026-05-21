@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import { AppLoading } from '@/components/AppLoading'
@@ -17,14 +17,29 @@ import { useAuthStore } from '@/store/authStore'
 function App() {
   const status = useAuthStore((state) => state.status)
   const refresh = useAuthStore((state) => state.refresh)
+  const [sessionReady, setSessionReady] = useState(false)
 
   useEffect(() => {
-    if (status === 'idle') {
-      refresh()
+    let isActive = true
+
+    async function bootstrapSession() {
+      if (status === 'idle') {
+        await refresh()
+      }
+
+      if (isActive) {
+        setSessionReady(true)
+      }
+    }
+
+    bootstrapSession()
+
+    return () => {
+      isActive = false
     }
   }, [refresh, status])
 
-  if (status === 'idle' || status === 'loading') {
+  if (!sessionReady) {
     return <AppLoading />
   }
 
