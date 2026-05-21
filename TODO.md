@@ -12,7 +12,7 @@ This file is the working checklist for building the project in small committed t
 
 ## Milestone 2: Backend Core
 
-- [ ] Configure Express app middleware, CORS, cookies, logging, and health route.
+- [x] Configure Express app middleware, CORS, cookies, logging, and health route.
 - [ ] Connect MongoDB with a reusable database module.
 - [ ] Add centralized async, error, response, and validation helpers.
 - [ ] Add User and Task Mongoose models.
@@ -68,3 +68,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Scaffolded the Express backend workspace.
 - 2026-05-21: Scaffolded the Vite React frontend workspace.
 - 2026-05-21: Added shared development commands and environment examples.
+- 2026-05-21: Configured Express environment validation, middleware, and health checks.
