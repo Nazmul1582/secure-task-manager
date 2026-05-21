@@ -32,7 +32,7 @@ This file is the working checklist for building the project in small committed t
 - [x] Implement task creation.
 - [x] Implement task listing with pagination, filters, search, and sorting.
 - [x] Implement task detail lookup with ownership rules.
-- [ ] Implement task update.
+- [x] Implement task update.
 - [ ] Implement task deletion.
 - [ ] Add task validation and API smoke checks.
 
@@ -82,3 +82,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Implemented protected task creation with validation and assignment rules.
 - 2026-05-21: Implemented task listing with pagination, filters, search, sorting, and role-aware visibility.
 - 2026-05-21: Implemented task detail lookup with ownership and role rules.
+- 2026-05-21: Implemented task updates with partial validation and assignment checks.

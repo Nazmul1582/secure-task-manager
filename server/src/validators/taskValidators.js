@@ -23,15 +23,23 @@ const dateSchema = z.preprocess((value) => {
   return value;
 }, z.coerce.date().optional().nullable());
 
+const taskFields = {
+  title: z.string().trim().min(2).max(140),
+  description: z.string().trim().max(2000),
+  status: z.enum(Object.values(TASK_STATUSES)),
+  priority: z.enum(Object.values(TASK_PRIORITIES)),
+  dueDate: dateSchema,
+  tags: z.array(z.string().trim().min(1).max(32)).max(10),
+  assignedTo: objectIdSchema.optional().nullable(),
+};
+
 export const createTaskSchema = z.object({
   body: z.object({
-    title: z.string().trim().min(2).max(140),
-    description: z.string().trim().max(2000).optional().default(''),
-    status: z.enum(Object.values(TASK_STATUSES)).optional().default(TASK_STATUSES.TODO),
-    priority: z.enum(Object.values(TASK_PRIORITIES)).optional().default(TASK_PRIORITIES.MEDIUM),
-    dueDate: dateSchema,
-    tags: z.array(z.string().trim().min(1).max(32)).max(10).optional().default([]),
-    assignedTo: objectIdSchema.optional().nullable(),
+    ...taskFields,
+    description: taskFields.description.optional().default(''),
+    status: taskFields.status.optional().default(TASK_STATUSES.TODO),
+    priority: taskFields.priority.optional().default(TASK_PRIORITIES.MEDIUM),
+    tags: taskFields.tags.optional().default([]),
   }),
 });
 
@@ -52,5 +60,22 @@ export const listTasksSchema = z.object({
 export const taskIdParamSchema = z.object({
   params: z.object({
     id: objectIdSchema,
+  }),
+});
+
+export const updateTaskSchema = z.object({
+  params: z.object({
+    id: objectIdSchema,
+  }),
+  body: z.object({
+    ...taskFields,
+    title: taskFields.title.optional(),
+    description: taskFields.description.optional(),
+    status: taskFields.status.optional(),
+    priority: taskFields.priority.optional(),
+    dueDate: dateSchema,
+    tags: taskFields.tags.optional(),
+  }).refine((body) => Object.keys(body).length > 0, {
+    message: 'At least one field is required',
   }),
 });

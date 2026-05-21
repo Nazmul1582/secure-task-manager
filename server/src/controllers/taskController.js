@@ -1,4 +1,4 @@
-import { createTaskForUser, getTaskForUser, listTasksForUser } from '../services/taskService.js';
+import { createTaskForUser, getTaskForUser, listTasksForUser, updateTaskForUser } from '../services/taskService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendSuccess } from '../utils/apiResponse.js';
 
@@ -31,6 +31,17 @@ export const getTask = asyncHandler(async (req, res) => {
 
   sendSuccess(res, {
     message: 'Task loaded',
+    data: {
+      task,
+    },
+  });
+});
+
+export const updateTask = asyncHandler(async (req, res) => {
+  const task = await updateTaskForUser(req.user, req.validated.params.id, req.validated.body);
+
+  sendSuccess(res, {
+    message: 'Task updated',
     data: {
       task,
     },

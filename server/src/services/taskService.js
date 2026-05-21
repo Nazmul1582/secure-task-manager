@@ -7,15 +7,7 @@ const userPublicFields = 'name email avatar role';
 export async function createTaskForUser(user, input) {
   const assignedTo = input.assignedTo || user.id;
 
-  if (user.role !== USER_ROLES.ADMIN && assignedTo !== user.id) {
-    throw new ApiError(403, 'Members can only assign tasks to themselves');
-  }
-
-  const assigneeExists = await User.exists({ _id: assignedTo });
-
-  if (!assigneeExists) {
-    throw new ApiError(400, 'Assigned user does not exist');
-  }
+  await assertCanAssignTask(user, assignedTo);
 
   const task = await Task.create({
     title: input.title,
@@ -102,6 +94,32 @@ export async function getTaskForUser(user, taskId) {
   return task;
 }
 
+export async function updateTaskForUser(user, taskId, input) {
+  const task = await Task.findOne({
+    _id: taskId,
+    ...buildTaskAccessFilter(user),
+  });
+
+  if (!task) {
+    throw new ApiError(404, 'Task not found');
+  }
+
+  if (Object.hasOwn(input, 'assignedTo')) {
+    await assertCanAssignTask(user, input.assignedTo);
+  }
+
+  for (const field of ['title', 'description', 'status', 'priority', 'dueDate', 'tags', 'assignedTo']) {
+    if (Object.hasOwn(input, field)) {
+      task[field] = input[field];
+    }
+  }
+
+  await task.save();
+  await populateTaskUsers(task);
+
+  return task.toJSON();
+}
+
 async function populateTaskUsers(task) {
   await task.populate([
     { path: 'createdBy', select: userPublicFields },
@@ -117,4 +135,20 @@ function buildTaskAccessFilter(user) {
   return {
     $or: [{ createdBy: user._id }, { assignedTo: user._id }],
   };
+}
+
+async function assertCanAssignTask(user, assignedTo) {
+  if (!assignedTo) {
+    return;
+  }
+
+  if (user.role !== USER_ROLES.ADMIN && assignedTo !== user.id) {
+    throw new ApiError(403, 'Members can only assign tasks to themselves');
+  }
+
+  const assigneeExists = await User.exists({ _id: assignedTo });
+
+  if (!assigneeExists) {
+    throw new ApiError(400, 'Assigned user does not exist');
+  }
 }
