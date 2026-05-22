@@ -19,7 +19,13 @@ export const authApi = {
   me() {
     return http.get('/auth/me').then(unwrap)
   },
+  updateProfile(payload) {
+    return http.patch('/auth/profile', payload).then(unwrap)
+  },
   changePassword(payload) {
     return http.post('/auth/change-password', payload).then(unwrap)
+  },
+  deleteAccount() {
+    return http.delete('/auth/account').then(unwrap)
   },
 }

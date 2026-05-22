@@ -126,6 +126,27 @@ export const useAuthStore = create((set, get) => ({
       throw error
     }
   },
+
+  async updateProfile(payload) {
+    set({ error: null })
+
+    try {
+      const response = await authApi.updateProfile(payload)
+      set({ user: response.data.user, error: null })
+      return response.data.user
+    } catch (error) {
+      set({ error: getErrorMessage(error) })
+      throw error
+    }
+  },
+
+  async deleteAccount() {
+    try {
+      await authApi.deleteAccount()
+    } finally {
+      get().clearSession()
+    }
+  },
 }))
 
 onAccessTokenChange((token) => {
