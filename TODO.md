@@ -61,6 +61,20 @@ This file is the working checklist for building the project in small committed t
 - [x] Add production deployment notes.
 - [x] Push committed milestones to GitHub remote.
 
+## Milestone 8: Admin, Settings, Account, And UI Polish
+
+- [ ] Define admin bootstrap flow and prevent public admin registration.
+- [ ] Add admin-only user listing and role update APIs.
+- [ ] Enforce admin/member access rules with backend tests.
+- [ ] Build settings page with Profile, System, and Account sections.
+- [ ] Implement username/email/password update flows.
+- [ ] Apply the reference-inspired light mode UI direction across the project.
+- [ ] Add whole-app Bangla/English language switching with persistence.
+- [ ] Add Delete My Account confirmation modal.
+- [ ] Implement user soft delete and block deleted-user login/refresh.
+- [ ] Hide soft-deleted users' tasks from normal task views.
+- [ ] Add frontend and backend tests for settings, roles, language, soft delete, and UI behavior.
+
 ## Progress Log
 
 - 2026-05-21: Created the initial repository roadmap and documentation.
@@ -101,3 +115,4 @@ This file is the working checklist for building the project in small committed t
 - 2026-05-21: Added frontend Vitest tests for login validation and protected route redirects.
 - 2026-05-21: Added production deployment notes for frontend, backend, MongoDB Atlas, and checks.
 - 2026-05-21: Pushed committed milestones to GitHub remote.
+- 2026-05-22: Planned admin/user management, settings page, whole-app BN/EN language switching, soft-delete account behavior, and reference-inspired light mode UI direction.
