@@ -26,8 +26,8 @@ export function AppLayout() {
   }
 
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <div className="mx-auto grid min-h-svh w-full max-w-7xl lg:grid-cols-[260px_1fr]">
+    <main className="min-h-svh bg-background p-0 text-foreground lg:p-6">
+      <div className="mx-auto grid min-h-svh w-full max-w-7xl overflow-hidden bg-card shadow-xl lg:min-h-[calc(100svh-3rem)] lg:grid-cols-[260px_1fr] lg:rounded-2xl lg:border lg:border-border">
         <aside className="border-b border-border bg-card px-4 py-4 lg:border-b-0 lg:border-r">
           <div className="flex items-center gap-3 px-2 text-sm font-semibold">
             <span className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
@@ -57,7 +57,7 @@ export function AppLayout() {
         </aside>
 
         <section className="flex min-w-0 flex-col">
-          <header className="flex min-h-16 items-center justify-between border-b border-border bg-background/90 px-6">
+          <header className="flex min-h-16 items-center justify-between border-b border-border bg-card/95 px-6">
             <div>
               <p className="text-sm font-medium">{user?.name || 'Member'}</p>
               <p className="text-xs text-muted-foreground">{user?.email || 'Secure workspace'}</p>
@@ -70,7 +70,7 @@ export function AppLayout() {
               </Button>
             </div>
           </header>
-          <div className="min-w-0 flex-1 px-6 py-6">
+          <div className="min-w-0 flex-1 bg-muted/40 px-6 py-6">
             <Outlet />
           </div>
         </section>
