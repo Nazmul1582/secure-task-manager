@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import mongoose from 'mongoose'
 import request from 'supertest'
 
 process.env.NODE_ENV = 'test'
@@ -8,6 +9,7 @@ process.env.ACCESS_TOKEN_SECRET ||= 'a'.repeat(32)
 process.env.REFRESH_TOKEN_SECRET ||= 'b'.repeat(32)
 
 const { default: app } = await import('../src/app.js')
+const { User } = await import('../src/models/User.js')
 
 test('GET /api/health returns the standard success envelope', async () => {
   const response = await request(app).get('/api/health').expect(200)
@@ -30,4 +32,31 @@ test('POST /api/auth/register validates required fields before database work', a
   assert.equal(response.body.success, false)
   assert.equal(response.body.message, 'Validation failed')
   assert.ok(response.body.errors.length > 0)
+})
+
+test('User save hook hashes passwords without requiring a next callback', async () => {
+  const originalReadyState = mongoose.connection.readyState
+  const originalInsertOne = User.collection.insertOne
+
+  mongoose.connection.readyState = 1
+  User.collection.insertOne = async (doc) => ({
+    acknowledged: true,
+    insertedId: doc._id,
+  })
+
+  const user = new User({
+    name: 'Test User',
+    email: `test-${Date.now()}@example.com`,
+    password: 'password123',
+  })
+
+  try {
+    await user.save()
+
+    assert.notEqual(user.password, 'password123')
+    assert.equal(await user.comparePassword('password123'), true)
+  } finally {
+    User.collection.insertOne = originalInsertOne
+    mongoose.connection.readyState = originalReadyState
+  }
 })

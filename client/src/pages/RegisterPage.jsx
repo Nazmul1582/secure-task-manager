@@ -61,11 +61,11 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="w-full max-w-sm">
+    <div className="w-full">
       <h1 className="text-2xl font-semibold">Create account</h1>
       <p className="mt-2 text-sm text-muted-foreground">Start with a member workspace.</p>
       <form
-        className="mt-6 space-y-4 rounded-md border border-border bg-card p-5 shadow-sm"
+        className="mt-6 space-y-5 rounded-md border border-border bg-card p-6 shadow-sm"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="space-y-2">
@@ -77,7 +77,14 @@ export function RegisterPage() {
               className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
               aria-hidden="true"
             />
-            <Input id="name" autoComplete="name" className="pl-9" {...register('name')} />
+            <Input
+              id="name"
+              autoComplete="name"
+              placeholder="Md. Nazmul Hasan"
+              className="pl-9"
+              aria-invalid={Boolean(errors.name)}
+              {...register('name')}
+            />
           </div>
           {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
         </div>
@@ -95,7 +102,9 @@ export function RegisterPage() {
               id="register-email"
               type="email"
               autoComplete="email"
+              placeholder="you@example.com"
               className="pl-9"
+              aria-invalid={Boolean(errors.email)}
               {...register('email')}
             />
           </div>
@@ -115,7 +124,9 @@ export function RegisterPage() {
               id="register-password"
               type="password"
               autoComplete="new-password"
+              placeholder="Create an 8+ character password"
               className="pl-9"
+              aria-invalid={Boolean(errors.password)}
               {...register('password')}
             />
           </div>
@@ -126,20 +137,33 @@ export function RegisterPage() {
           <label className="text-sm font-medium" htmlFor="confirm-password">
             Confirm password
           </label>
-          <Input
-            id="confirm-password"
-            type="password"
-            autoComplete="new-password"
-            {...register('confirmPassword')}
-          />
+          <div className="relative">
+            <Lock
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              id="confirm-password"
+              type="password"
+              autoComplete="new-password"
+              placeholder="Confirm your password"
+              className="pl-9"
+              aria-invalid={Boolean(errors.confirmPassword)}
+              {...register('confirmPassword')}
+            />
+          </div>
           {errors.confirmPassword && (
             <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
           )}
         </div>
 
-        {errors.root && <p className="text-sm text-destructive">{errors.root.message}</p>}
+        {errors.root && (
+          <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {errors.root.message}
+          </p>
+        )}
 
-        <Button className="w-full" disabled={isLoading}>
+        <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? 'Creating account...' : 'Create account'}
         </Button>
       </form>

@@ -3,6 +3,7 @@ import axios from 'axios'
 import { clearAccessToken, getAccessToken, setAccessToken } from './tokenManager'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const PUBLIC_AUTH_ENDPOINTS = ['/auth/login', '/auth/register', '/auth/refresh-token']
 
 export const http = axios.create({
   baseURL: API_URL,
@@ -29,9 +30,17 @@ http.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
     const status = error.response?.status
-    const isRefreshRequest = originalRequest?.url?.includes('/auth/refresh-token')
+    const isPublicAuthRequest = PUBLIC_AUTH_ENDPOINTS.some((endpoint) =>
+      originalRequest?.url?.includes(endpoint),
+    )
 
-    if (status !== 401 || !originalRequest || originalRequest._retry || isRefreshRequest) {
+    if (
+      status !== 401 ||
+      !originalRequest ||
+      originalRequest._retry ||
+      isPublicAuthRequest ||
+      !getAccessToken()
+    ) {
       return Promise.reject(error)
     }
 
@@ -47,6 +56,7 @@ http.interceptors.response.use(
 
       const session = await refreshPromise
       setAccessToken(session.accessToken)
+      originalRequest.headers ??= {}
       originalRequest.headers.Authorization = `Bearer ${session.accessToken}`
 
       return http(originalRequest)

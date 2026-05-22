@@ -50,11 +50,11 @@ export function LoginPage() {
   }
 
   return (
-    <div className="w-full max-w-sm">
+    <div className="w-full">
       <h1 className="text-2xl font-semibold">Sign in</h1>
       <p className="mt-2 text-sm text-muted-foreground">Use your secureTaskManager account.</p>
       <form
-        className="mt-6 space-y-4 rounded-md border border-border bg-card p-5 shadow-sm"
+        className="mt-6 space-y-5 rounded-md border border-border bg-card p-6 shadow-sm"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="space-y-2">
@@ -66,7 +66,15 @@ export function LoginPage() {
               className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
               aria-hidden="true"
             />
-            <Input id="email" type="email" autoComplete="email" className="pl-9" {...register('email')} />
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              className="pl-9"
+              aria-invalid={Boolean(errors.email)}
+              {...register('email')}
+            />
           </div>
           {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
         </div>
@@ -84,16 +92,22 @@ export function LoginPage() {
               id="password"
               type="password"
               autoComplete="current-password"
+              placeholder="Enter your password"
               className="pl-9"
+              aria-invalid={Boolean(errors.password)}
               {...register('password')}
             />
           </div>
           {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
         </div>
 
-        {errors.root && <p className="text-sm text-destructive">{errors.root.message}</p>}
+        {errors.root && (
+          <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {errors.root.message}
+          </p>
+        )}
 
-        <Button className="w-full" disabled={isLoading}>
+        <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </form>

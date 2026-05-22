@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 import { AppLoading } from '@/components/AppLoading'
 import { AuthLayout } from '@/layouts/AuthLayout'
@@ -15,17 +15,26 @@ import { TasksPage } from '@/pages/TasksPage'
 import { ProtectedRoute } from '@/routes/ProtectedRoute'
 import { useAuthStore } from '@/store/authStore'
 
+const publicAuthRoutes = new Set(['/login', '/register'])
+
 function App() {
+  const location = useLocation()
   const status = useAuthStore((state) => state.status)
+  const clearSession = useAuthStore((state) => state.clearSession)
   const refresh = useAuthStore((state) => state.refresh)
   const [sessionReady, setSessionReady] = useState(false)
+  const isPublicAuthRoute = publicAuthRoutes.has(location.pathname)
 
   useEffect(() => {
     let isActive = true
 
     async function bootstrapSession() {
       if (status === 'idle') {
-        await refresh()
+        if (isPublicAuthRoute) {
+          clearSession()
+        } else {
+          await refresh()
+        }
       }
 
       if (isActive) {
@@ -38,7 +47,7 @@ function App() {
     return () => {
       isActive = false
     }
-  }, [refresh, status])
+  }, [clearSession, isPublicAuthRoute, refresh, status])
 
   if (!sessionReady) {
     return <AppLoading />

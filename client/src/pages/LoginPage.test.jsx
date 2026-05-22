@@ -27,6 +27,9 @@ describe('LoginPage', () => {
       </MemoryRouter>,
     )
 
+    expect(screen.getByPlaceholderText(/you@example.com/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/enter your password/i)).toBeInTheDocument()
+
     await user.click(screen.getByRole('button', { name: /sign in/i }))
 
     expect(await screen.findByText(/enter a valid email address/i)).toBeInTheDocument()
