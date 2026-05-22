@@ -21,3 +21,10 @@ export const changePasswordSchema = z.object({
     newPassword: z.string().min(8).max(128),
   }),
 })
+
+export const updateProfileSchema = z.object({
+  body: z.object({
+    email: z.email().trim().toLowerCase().optional(),
+    name: z.string().trim().min(2).max(80).optional(),
+  }),
+})

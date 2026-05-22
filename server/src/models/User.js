@@ -65,6 +65,10 @@ const userSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
     refreshTokens: {
       type: [refreshTokenSchema],
       default: [],
@@ -85,6 +89,7 @@ const userSchema = new mongoose.Schema(
 )
 
 userSchema.index({ role: 1 })
+userSchema.index({ deletedAt: 1 })
 
 userSchema.pre('save', async function hashPassword() {
   if (!this.isModified('password')) {

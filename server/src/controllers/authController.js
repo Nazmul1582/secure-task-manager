@@ -5,6 +5,8 @@ import {
   logoutUser,
   registerUser,
   rotateRefreshSession,
+  softDeleteUserAccount,
+  updateUserProfile,
 } from '../services/authService.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 import {
@@ -101,5 +103,25 @@ export const changePassword = asyncHandler(async (req, res) => {
     data: {
       user,
     },
+  })
+})
+
+export const updateProfile = asyncHandler(async (req, res) => {
+  const user = await updateUserProfile(req.user.id, req.validated.body)
+
+  sendSuccess(res, {
+    message: 'Profile updated',
+    data: {
+      user,
+    },
+  })
+})
+
+export const deleteAccount = asyncHandler(async (req, res) => {
+  await softDeleteUserAccount(req.user.id)
+  res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, getClearRefreshCookieOptions())
+
+  sendSuccess(res, {
+    message: 'Account deleted',
   })
 })

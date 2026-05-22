@@ -26,8 +26,9 @@ export async function createTaskForUser(user, input) {
 }
 
 export async function listTasksForUser(user, query) {
+  const taskVisibilityFilter = await buildVisibleTaskFilter(user)
   const filter = {
-    ...buildTaskAccessFilter(user),
+    ...taskVisibilityFilter,
   }
 
   if (query.status) {
@@ -165,6 +166,25 @@ function buildTaskAccessFilter(user) {
 
   return {
     $or: [{ createdBy: user._id }, { assignedTo: user._id }],
+  }
+}
+
+async function buildVisibleTaskFilter(user) {
+  const accessFilter = buildTaskAccessFilter(user)
+  const deletedUserIds = await User.find({ deletedAt: { $ne: null } }).distinct('_id')
+
+  if (deletedUserIds.length === 0) {
+    return accessFilter
+  }
+
+  return {
+    $and: [
+      accessFilter,
+      {
+        assignedTo: { $nin: deletedUserIds },
+        createdBy: { $nin: deletedUserIds },
+      },
+    ],
   }
 }
 

@@ -19,10 +19,10 @@ export const authenticate = asyncHandler(async (req, _res, next) => {
     throw new ApiError(401, 'Access token is invalid or expired')
   }
 
-  const user = await User.findById(payload.sub)
+  const user = await User.findOne({ _id: payload.sub, deletedAt: null })
 
   if (!user) {
-    throw new ApiError(401, 'Access token user no longer exists')
+    throw new ApiError(401, 'Access token user no longer exists or is inactive')
   }
 
   req.user = user

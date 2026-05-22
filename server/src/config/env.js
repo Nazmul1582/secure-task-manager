@@ -18,6 +18,17 @@ const envSchema = z.object({
   REFRESH_TOKEN_EXPIRES: z.string().default('7d'),
   COOKIE_SECURE: booleanFromString.default(false),
   COOKIE_SAME_SITE: z.enum(['strict', 'lax', 'none']).default('lax'),
+  ADMIN_EMAILS: z
+    .string()
+    .optional()
+    .transform((value) =>
+      value
+        ? value
+            .split(',')
+            .map((email) => email.trim().toLowerCase())
+            .filter(Boolean)
+        : [],
+    ),
   DNS_SERVERS: z
     .string()
     .optional()

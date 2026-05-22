@@ -10,6 +10,7 @@ import { errorHandler } from './middleware/errorHandler.js'
 import { notFound } from './middleware/notFound.js'
 import authRoutes from './routes/authRoutes.js'
 import taskRoutes from './routes/taskRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 import { sendSuccess } from './utils/apiResponse.js'
 
 const app = express()
@@ -52,6 +53,7 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/tasks', taskRoutes)
+app.use('/api/users', userRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
