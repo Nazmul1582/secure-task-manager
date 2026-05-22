@@ -100,6 +100,60 @@ export const useTaskStore = create((set, get) => ({
       throw error
     }
   },
+
+  reorderTasks(activeId, overId, nextStatus, nextPosition) {
+    set((state) => {
+      const activeIndex = state.tasks.findIndex((task) => task._id === activeId)
+
+      if (activeIndex === -1) {
+        return state
+      }
+
+      const activeTask = {
+        ...state.tasks[activeIndex],
+        position: nextPosition ?? state.tasks[activeIndex].position,
+        status: nextStatus || state.tasks[activeIndex].status,
+      }
+      const nextTasks = state.tasks.filter((task) => task._id !== activeId)
+      const overIndex = nextTasks.findIndex((task) => task._id === overId)
+
+      if (overIndex === -1) {
+        nextTasks.unshift(activeTask)
+      } else {
+        nextTasks.splice(overIndex, 0, activeTask)
+      }
+
+      return {
+        tasks: nextTasks,
+      }
+    })
+  },
+
+  async removeTask(id) {
+    set({ status: 'loading', error: null })
+
+    try {
+      await tasksApi.remove(id)
+      set((state) => ({
+        tasks: state.tasks.filter((task) => task._id !== id),
+        currentTask: state.currentTask?._id === id ? null : state.currentTask,
+        meta: state.meta
+          ? {
+              ...state.meta,
+              total: Math.max(state.meta.total - 1, 0),
+            }
+          : state.meta,
+        status: 'success',
+        error: null,
+      }))
+    } catch (error) {
+      set({
+        status: 'error',
+        error: error.response?.data?.message || 'Unable to delete task',
+      })
+      throw error
+    }
+  },
 }))
 
 function cleanParams(params) {

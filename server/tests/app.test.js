@@ -10,7 +10,8 @@ process.env.REFRESH_TOKEN_SECRET ||= 'b'.repeat(32)
 
 const { default: app } = await import('../src/app.js')
 const { listTasksForUser } = await import('../src/services/taskService.js')
-const { Task } = await import('../src/models/Task.js')
+const { updateTaskSchema } = await import('../src/validators/taskValidators.js')
+const { TASK_STATUSES, Task } = await import('../src/models/Task.js')
 const { USER_ROLES, User } = await import('../src/models/User.js')
 
 test('GET /api/health returns the standard success envelope', async () => {
@@ -140,4 +141,15 @@ test('Task text search disables sanitizeFilter only for the trusted server-built
     Task.find = originalFind
     Task.countDocuments = originalCountDocuments
   }
+})
+
+test('Task update validation accepts persisted board position updates', () => {
+  const id = new mongoose.Types.ObjectId().toString()
+  const result = updateTaskSchema.safeParse({
+    body: { position: 1500, status: TASK_STATUSES.TODO },
+    params: { id },
+  })
+
+  assert.equal(result.success, true)
+  assert.equal(result.data.body.position, 1500)
 })

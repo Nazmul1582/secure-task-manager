@@ -43,6 +43,10 @@ const taskSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    position: {
+      type: Number,
+      default: () => Date.now(),
+    },
     tags: {
       type: [String],
       default: [],
@@ -79,6 +83,7 @@ const taskSchema = new mongoose.Schema(
 taskSchema.index({ createdBy: 1, status: 1 })
 taskSchema.index({ createdBy: 1, priority: 1 })
 taskSchema.index({ createdBy: 1, dueDate: 1 })
+taskSchema.index({ createdBy: 1, status: 1, position: 1 })
 taskSchema.index({ assignedTo: 1, status: 1 })
 taskSchema.index({ title: 'text', description: 'text', tags: 'text' })
 

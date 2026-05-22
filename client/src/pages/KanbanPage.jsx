@@ -1,11 +1,12 @@
-import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core'
+import { closestCorners, DndContext, useDraggable, useDroppable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { getNextPosition } from '@/lib/kanbanPosition'
 import { cn } from '@/lib/utils'
 import { useTaskStore } from '@/store/taskStore'
 
@@ -21,10 +22,12 @@ export function KanbanPage() {
   const status = useTaskStore((state) => state.status)
   const error = useTaskStore((state) => state.error)
   const fetchTasks = useTaskStore((state) => state.fetchTasks)
+  const removeTask = useTaskStore((state) => state.removeTask)
+  const reorderTasks = useTaskStore((state) => state.reorderTasks)
   const updateTask = useTaskStore((state) => state.updateTask)
 
   useEffect(() => {
-    fetchTasks({ limit: 100, sortBy: 'createdAt', sortOrder: 'desc' })
+    fetchTasks({ limit: 100, sortBy: 'position', sortOrder: 'asc' })
   }, [fetchTasks])
 
   const groupedTasks = useMemo(
@@ -38,19 +41,45 @@ export function KanbanPage() {
 
   async function handleDragEnd(event) {
     const taskId = event.active?.id
-    const nextStatus = event.over?.id
+    const overId = event.over?.id
+    const nextStatus = event.over?.data?.current?.status || overId
     const task = tasks.find((item) => item._id === taskId)
 
-    if (!task || !nextStatus || task.status === nextStatus) {
+    if (!task || !overId || !nextStatus) {
       return
     }
 
+    const nextPosition = getNextPosition(tasks, taskId, overId, nextStatus)
+
+    if (task.status === nextStatus && task.position === nextPosition) {
+      return
+    }
+
+    reorderTasks(taskId, overId, nextStatus, nextPosition)
+
     try {
-      await updateTask(taskId, { status: nextStatus })
+      await updateTask(taskId, { position: nextPosition, status: nextStatus })
       toast.success('Task moved')
     } catch (error) {
       toast.error(error.response?.data?.message || 'Unable to move task')
     }
+  }
+
+  function confirmDelete(task) {
+    toast('Delete task?', {
+      description: `"${task.title}" will be permanently removed.`,
+      action: {
+        label: 'Delete',
+        onClick: async () => {
+          try {
+            await removeTask(task._id)
+            toast.success('Task deleted')
+          } catch (error) {
+            toast.error(error.response?.data?.message || 'Unable to delete task')
+          }
+        },
+      },
+    })
   }
 
   return (
@@ -71,7 +100,7 @@ export function KanbanPage() {
         </div>
       )}
 
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
         <div className="grid gap-4 xl:grid-cols-4">
           {columns.map((column) => (
             <KanbanColumn
@@ -79,6 +108,7 @@ export function KanbanPage() {
               column={column}
               tasks={groupedTasks[column.status] || []}
               loading={status === 'loading'}
+              onDeleteTask={confirmDelete}
             />
           ))}
         </div>
@@ -87,9 +117,12 @@ export function KanbanPage() {
   )
 }
 
-function KanbanColumn({ column, tasks, loading }) {
+function KanbanColumn({ column, tasks, loading, onDeleteTask }) {
   const { isOver, setNodeRef } = useDroppable({
     id: column.status,
+    data: {
+      status: column.status,
+    },
   })
 
   return (
@@ -114,13 +147,22 @@ function KanbanColumn({ column, tasks, loading }) {
             No tasks.
           </p>
         )}
-        {!loading && tasks.map((task) => <KanbanCard key={task._id} task={task} />)}
+        {!loading &&
+          tasks.map((task) => (
+            <KanbanCard key={task._id} task={task} status={column.status} onDeleteTask={onDeleteTask} />
+          ))}
       </div>
     </section>
   )
 }
 
-function KanbanCard({ task }) {
+function KanbanCard({ task, status, onDeleteTask }) {
+  const { setNodeRef: setDroppableRef } = useDroppable({
+    id: task._id,
+    data: {
+      status,
+    },
+  })
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task._id,
   })
@@ -131,34 +173,69 @@ function KanbanCard({ task }) {
 
   return (
     <article
-      ref={setNodeRef}
+      ref={(node) => {
+        setNodeRef(node)
+        setDroppableRef(node)
+      }}
       style={style}
       className={cn(
-        'rounded-md border border-border bg-background p-3 shadow-sm transition-shadow',
+        'cursor-grab rounded-md border border-border bg-background p-3 shadow-sm transition-shadow active:cursor-grabbing',
         isDragging && 'relative z-10 shadow-lg',
       )}
+      {...listeners}
+      {...attributes}
     >
-      <div className="flex items-start gap-2">
-        <button
-          className="mt-0.5 rounded text-muted-foreground hover:text-foreground"
-          type="button"
-          title="Drag task"
-          aria-label="Drag task"
-          {...listeners}
-          {...attributes}
-        >
-          <GripVertical className="size-4" aria-hidden="true" />
-        </button>
-        <div className="min-w-0 flex-1">
-          <Link
-            to={`/tasks/${task._id}/edit`}
-            className="block truncate text-sm font-medium hover:text-primary"
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1 space-y-2">
+          <h3 className="truncate text-sm font-semibold">{task.title}</h3>
+          {task.description && (
+            <p className="truncate text-xs leading-5 text-muted-foreground">{task.description}</p>
+          )}
+          <span
+            className={cn(
+              'inline-flex rounded-md px-2 py-1 text-xs font-medium capitalize',
+              priorityTone(task.priority),
+            )}
           >
-            {task.title}
-          </Link>
-          <p className="mt-1 text-xs capitalize text-muted-foreground">{task.priority}</p>
+            {task.priority}
+          </span>
+        </div>
+        <div className="flex shrink-0 gap-1">
+          <Button asChild variant="ghost" size="icon" className="size-8">
+            <Link
+              aria-label={`Edit ${task.title}`}
+              title="Edit task"
+              to={`/tasks/${task._id}/edit`}
+              onPointerDown={(event) => event.stopPropagation()}
+            >
+              <Pencil className="size-4" aria-hidden="true" />
+            </Link>
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            aria-label={`Delete ${task.title}`}
+            title="Delete task"
+            onClick={() => onDeleteTask(task)}
+            onPointerDown={(event) => event.stopPropagation()}
+          >
+            <Trash2 className="size-4" aria-hidden="true" />
+          </Button>
         </div>
       </div>
     </article>
   )
+}
+
+function priorityTone(priority) {
+  const tones = {
+    low: 'bg-secondary text-secondary-foreground',
+    medium: 'bg-sky-100 text-sky-800 dark:bg-sky-500/15 dark:text-sky-200',
+    high: 'bg-orange-100 text-orange-800 dark:bg-orange-500/15 dark:text-orange-200',
+    urgent: 'bg-destructive/10 text-destructive',
+  }
+
+  return tones[priority] || tones.medium
 }

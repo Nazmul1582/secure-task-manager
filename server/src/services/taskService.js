@@ -15,6 +15,7 @@ export async function createTaskForUser(user, input) {
     status: input.status,
     priority: input.priority,
     dueDate: input.dueDate,
+    position: input.position,
     tags: input.tags,
     assignedTo,
     createdBy: user._id,
@@ -116,7 +117,16 @@ export async function updateTaskForUser(user, taskId, input) {
     await assertCanAssignTask(user, input.assignedTo)
   }
 
-  for (const field of ['title', 'description', 'status', 'priority', 'dueDate', 'tags', 'assignedTo']) {
+  for (const field of [
+    'title',
+    'description',
+    'status',
+    'priority',
+    'dueDate',
+    'position',
+    'tags',
+    'assignedTo',
+  ]) {
     if (Object.hasOwn(input, field)) {
       task[field] = input[field]
     }

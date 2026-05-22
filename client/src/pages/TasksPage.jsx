@@ -1,6 +1,7 @@
-import { ChevronLeft, ChevronRight, Pencil, Search } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Pencil, Search, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,6 +32,7 @@ export function TasksPage() {
   const status = useTaskStore((state) => state.status)
   const error = useTaskStore((state) => state.error)
   const fetchTasks = useTaskStore((state) => state.fetchTasks)
+  const removeTask = useTaskStore((state) => state.removeTask)
   const [searchInput, setSearchInput] = useState('')
   const [query, setQuery] = useState({
     page: 1,
@@ -87,6 +89,23 @@ export function TasksPage() {
   function submitSearch(event) {
     event.preventDefault()
     applySearch(searchInput)
+  }
+
+  function confirmDelete(task) {
+    toast('Delete task?', {
+      description: `"${task.title}" will be permanently removed.`,
+      action: {
+        label: 'Delete',
+        onClick: async () => {
+          try {
+            await removeTask(task._id)
+            toast.success('Task deleted')
+          } catch (error) {
+            toast.error(error.response?.data?.message || 'Unable to delete task')
+          }
+        },
+      },
+    })
   }
 
   return (
@@ -195,6 +214,16 @@ export function TasksPage() {
                     <Link aria-label={`Edit ${task.title}`} title="Edit task" to={`/tasks/${task._id}/edit`}>
                       <Pencil className="size-4" aria-hidden="true" />
                     </Link>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Delete ${task.title}`}
+                    title="Delete task"
+                    onClick={() => confirmDelete(task)}
+                  >
+                    <Trash2 className="size-4" aria-hidden="true" />
                   </Button>
                 </div>
               </div>

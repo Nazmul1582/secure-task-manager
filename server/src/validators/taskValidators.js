@@ -32,6 +32,7 @@ const taskFields = {
   status: z.enum(Object.values(TASK_STATUSES)),
   priority: z.enum(Object.values(TASK_PRIORITIES)),
   dueDate: dateSchema,
+  position: z.coerce.number().finite().optional(),
   tags: z.array(z.string().trim().min(1).max(32)).max(10),
   assignedTo: objectIdSchema.optional().nullable(),
 }
@@ -55,7 +56,9 @@ export const listTasksSchema = z.object({
     assignedTo: objectIdSchema.optional(),
     tags: tagListSchema,
     search: z.string().trim().max(100).optional(),
-    sortBy: z.enum(['createdAt', 'updatedAt', 'dueDate', 'priority', 'title', 'status']).default('createdAt'),
+    sortBy: z
+      .enum(['createdAt', 'updatedAt', 'dueDate', 'priority', 'title', 'status', 'position'])
+      .default('createdAt'),
     sortOrder: z.enum(['asc', 'desc']).default('desc'),
   }),
 })
@@ -78,6 +81,7 @@ export const updateTaskSchema = z.object({
       status: taskFields.status.optional(),
       priority: taskFields.priority.optional(),
       dueDate: dateSchema,
+      position: taskFields.position,
       tags: taskFields.tags.optional(),
     })
     .refine((body) => Object.keys(body).length > 0, {
