@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { tasksApi } from '@/api/tasks'
 import { getNextPosition } from '@/lib/kanbanPosition'
+import { useAuthStore } from '@/store/authStore'
 import { useTaskStore } from '@/store/taskStore'
 import { KanbanPage } from './KanbanPage'
 
@@ -25,6 +26,12 @@ describe('KanbanPage', () => {
             _id: 'task-1',
             description: 'This description should render as a single truncated line.',
             priority: 'urgent',
+            assignedTo: {
+              name: 'Member User',
+            },
+            createdBy: {
+              name: 'Admin User',
+            },
             status: 'todo',
             title: 'Board task',
           },
@@ -50,6 +57,14 @@ describe('KanbanPage', () => {
       status: 'idle',
       tasks: [],
     })
+    useAuthStore.setState({
+      accessToken: 'token',
+      status: 'authenticated',
+      user: {
+        _id: 'admin-1',
+        role: 'admin',
+      },
+    })
   })
 
   it('renders task title as card text with edit and delete icon actions', async () => {
@@ -64,6 +79,10 @@ describe('KanbanPage', () => {
     expect(title.closest('a')).toBeNull()
     expect(screen.getByText(/single truncated line/i)).toHaveClass('truncate')
     expect(screen.getByText(/urgent/i)).toBeInTheDocument()
+    expect(screen.getByText(/created by/i)).toBeInTheDocument()
+    expect(screen.getByText(/admin user/i)).toBeInTheDocument()
+    expect(screen.getByText(/assigned to/i)).toBeInTheDocument()
+    expect(screen.getByText(/member user/i)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /edit board task/i })).toHaveAttribute(
       'href',
       '/tasks/task-1/edit',

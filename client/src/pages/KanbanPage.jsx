@@ -5,10 +5,12 @@ import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
+import { TaskUserBadges } from '@/components/TaskUserBadges'
 import { Button } from '@/components/ui/button'
 import { useI18n } from '@/lib/i18n'
 import { getNextPosition } from '@/lib/kanbanPosition'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/store/authStore'
 import { useTaskStore } from '@/store/taskStore'
 
 const columns = [
@@ -20,6 +22,7 @@ const columns = [
 
 export function KanbanPage() {
   const { t } = useI18n()
+  const user = useAuthStore((state) => state.user)
   const tasks = useTaskStore((state) => state.tasks)
   const status = useTaskStore((state) => state.status)
   const error = useTaskStore((state) => state.error)
@@ -110,6 +113,7 @@ export function KanbanPage() {
               column={column}
               tasks={groupedTasks[column.status] || []}
               loading={status === 'loading'}
+              showUserBadges={user?.role === 'admin'}
               onDeleteTask={confirmDelete}
             />
           ))}
@@ -119,7 +123,7 @@ export function KanbanPage() {
   )
 }
 
-function KanbanColumn({ column, tasks, loading, onDeleteTask }) {
+function KanbanColumn({ column, tasks, loading, onDeleteTask, showUserBadges }) {
   const { isOver, setNodeRef } = useDroppable({
     id: column.status,
     data: {
@@ -151,14 +155,20 @@ function KanbanColumn({ column, tasks, loading, onDeleteTask }) {
         )}
         {!loading &&
           tasks.map((task) => (
-            <KanbanCard key={task._id} task={task} status={column.status} onDeleteTask={onDeleteTask} />
+            <KanbanCard
+              key={task._id}
+              task={task}
+              status={column.status}
+              showUserBadges={showUserBadges}
+              onDeleteTask={onDeleteTask}
+            />
           ))}
       </div>
     </section>
   )
 }
 
-function KanbanCard({ task, status, onDeleteTask }) {
+function KanbanCard({ task, status, onDeleteTask, showUserBadges }) {
   const { setNodeRef: setDroppableRef } = useDroppable({
     id: task._id,
     data: {
@@ -201,6 +211,13 @@ function KanbanCard({ task, status, onDeleteTask }) {
           >
             {task.priority}
           </span>
+          {showUserBadges && (
+            <TaskUserBadges
+              assignedTo={task.assignedTo}
+              className="pt-1"
+              createdBy={task.createdBy}
+            />
+          )}
         </div>
         <div className="flex shrink-0 gap-1">
           <Button asChild variant="ghost" size="icon" className="size-8">

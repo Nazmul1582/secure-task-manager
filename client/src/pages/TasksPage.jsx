@@ -3,10 +3,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
+import { TaskUserBadges } from '@/components/TaskUserBadges'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useI18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/store/authStore'
 import { useTaskStore } from '@/store/taskStore'
 
 const statusOptions = [
@@ -29,6 +31,7 @@ const SEARCH_DEBOUNCE_MS = 400
 
 export function TasksPage() {
   const { t } = useI18n()
+  const user = useAuthStore((state) => state.user)
   const tasks = useTaskStore((state) => state.tasks)
   const meta = useTaskStore((state) => state.meta)
   const status = useTaskStore((state) => state.status)
@@ -79,6 +82,7 @@ export function TasksPage() {
   const canGoBack = query.page > 1
   const canGoForward = meta ? query.page < meta.totalPages : false
   const summary = useMemo(() => `${meta?.total || 0} task${meta?.total === 1 ? '' : 's'}`, [meta])
+  const isAdmin = user?.role === 'admin'
 
   function updateQuery(nextQuery) {
     setQuery((current) => ({
@@ -231,7 +235,11 @@ export function TasksPage() {
               </div>
 
               <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
-                <span>Assigned to {task.assignedTo?.name || 'Unassigned'}</span>
+                {isAdmin ? (
+                  <TaskUserBadges assignedTo={task.assignedTo} createdBy={task.createdBy} />
+                ) : (
+                  <span>Assigned to {task.assignedTo?.name || 'Unassigned'}</span>
+                )}
                 {task.dueDate && <span>Due {formatDate(task.dueDate)}</span>}
                 {task.tags?.map((tag) => (
                   <span key={tag} className="rounded-md bg-secondary px-2 py-1 text-secondary-foreground">

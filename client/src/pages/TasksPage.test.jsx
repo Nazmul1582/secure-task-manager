@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { tasksApi } from '@/api/tasks'
+import { useAuthStore } from '@/store/authStore'
 import { useTaskStore } from '@/store/taskStore'
 import { TasksPage } from './TasksPage'
 import { toast } from 'sonner'
@@ -49,6 +50,14 @@ describe('TasksPage', () => {
       meta: null,
       status: 'idle',
       tasks: [],
+    })
+    useAuthStore.setState({
+      accessToken: 'token',
+      status: 'authenticated',
+      user: {
+        _id: 'member-1',
+        role: 'member',
+      },
     })
   })
 
@@ -101,6 +110,9 @@ describe('TasksPage', () => {
             assignedTo: {
               name: 'Member User',
             },
+            createdBy: {
+              name: 'Admin User',
+            },
             description: 'A task that can be deleted',
             priority: 'high',
             status: 'todo',
@@ -139,5 +151,53 @@ describe('TasksPage', () => {
 
     expect(tasksApi.remove).toHaveBeenCalledWith('task-1')
     expect(toast.success).toHaveBeenCalledWith('Task deleted')
+  })
+
+  it('shows created and assigned user badges for admins', async () => {
+    vi.useRealTimers()
+    useAuthStore.setState({
+      accessToken: 'token',
+      status: 'authenticated',
+      user: {
+        _id: 'admin-1',
+        role: 'admin',
+      },
+    })
+    tasksApi.list.mockResolvedValue({
+      data: {
+        tasks: [
+          {
+            _id: 'task-1',
+            assignedTo: {
+              name: 'Member User',
+            },
+            createdBy: {
+              name: 'Admin User',
+            },
+            priority: 'high',
+            status: 'todo',
+            title: 'Owned task',
+          },
+        ],
+      },
+      meta: {
+        limit: 10,
+        page: 1,
+        total: 1,
+        totalPages: 1,
+      },
+    })
+
+    render(
+      <MemoryRouter>
+        <TasksPage />
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText('Owned task')).toBeInTheDocument()
+    expect(screen.getByText(/created by/i)).toBeInTheDocument()
+    expect(screen.getByText(/admin user/i)).toBeInTheDocument()
+    expect(screen.getByText(/assigned to/i)).toBeInTheDocument()
+    expect(screen.getByText(/member user/i)).toBeInTheDocument()
   })
 })

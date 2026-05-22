@@ -69,7 +69,8 @@ function App() {
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/tasks/new" element={<TaskFormPage mode="create" />} />
           <Route path="/tasks/:id/edit" element={<TaskFormPage mode="edit" />} />
-          <Route path="/tasks/kanban" element={<KanbanPage />} />
+          <Route path="/kanbar" element={<KanbanPage />} />
+          <Route path="/tasks/kanban" element={<Navigate to="/kanbar" replace />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route element={<AdminRoute />}>
             <Route path="/admin/users" element={<AdminUsersPage />} />

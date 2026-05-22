@@ -49,6 +49,7 @@ describe('AppLayout', () => {
     })
 
     expect(screen.getByRole('link', { name: /users/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /kanban/i })).toHaveAttribute('href', '/kanbar')
 
     cleanup()
 

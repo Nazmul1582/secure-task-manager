@@ -11,7 +11,7 @@ import { useAuthStore } from '@/store/authStore'
 const navigation = [
   { labelKey: 'dashboard', href: '/', icon: LayoutDashboard },
   { labelKey: 'tasks', href: '/tasks', icon: ListTodo },
-  { labelKey: 'kanban', href: '/tasks/kanban', icon: PanelsTopLeft },
+  { labelKey: 'kanban', href: '/kanbar', icon: PanelsTopLeft },
   { labelKey: 'settings', href: '/settings', icon: Settings },
 ]
 
