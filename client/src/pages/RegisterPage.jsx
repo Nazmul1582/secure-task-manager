@@ -8,6 +8,7 @@ import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useI18n } from '@/lib/i18n'
 import { useAuthStore } from '@/store/authStore'
 
 const registerSchema = z
@@ -23,6 +24,7 @@ const registerSchema = z
   })
 
 export function RegisterPage() {
+  const { t } = useI18n()
   const navigate = useNavigate()
   const registerAccount = useAuthStore((state) => state.register)
   const status = useAuthStore((state) => state.status)
@@ -62,15 +64,15 @@ export function RegisterPage() {
 
   return (
     <div className="w-full">
-      <h1 className="text-2xl font-semibold">Create account</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Start with a member workspace.</p>
+      <h1 className="text-2xl font-semibold">{t('createAccount')}</h1>
+      <p className="mt-2 text-sm text-muted-foreground">{t('startWorkspace')}</p>
       <form
         className="mt-6 space-y-5 rounded-md border border-border bg-card p-6 shadow-sm"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="space-y-2">
           <label className="text-sm font-medium" htmlFor="name">
-            Name
+            {t('name')}
           </label>
           <div className="relative">
             <User
@@ -91,7 +93,7 @@ export function RegisterPage() {
 
         <div className="space-y-2">
           <label className="text-sm font-medium" htmlFor="register-email">
-            Email
+            {t('email')}
           </label>
           <div className="relative">
             <Mail
@@ -113,7 +115,7 @@ export function RegisterPage() {
 
         <div className="space-y-2">
           <label className="text-sm font-medium" htmlFor="register-password">
-            Password
+            {t('password')}
           </label>
           <div className="relative">
             <Lock
@@ -164,13 +166,13 @@ export function RegisterPage() {
         )}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? 'Creating account...' : 'Create account'}
+          {isLoading ? 'Creating account...' : t('createAccount')}
         </Button>
       </form>
       <p className="mt-5 text-sm text-muted-foreground">
-        Already registered?{' '}
+        {t('alreadyRegistered')}{' '}
         <Link className="font-medium text-primary hover:underline" to="/login">
-          Sign in
+          {t('signIn')}
         </Link>
       </p>
     </div>

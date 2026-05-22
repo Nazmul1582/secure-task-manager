@@ -8,6 +8,7 @@ import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useI18n } from '@/lib/i18n'
 import { useTaskStore } from '@/store/taskStore'
 
 const taskSchema = z.object({
@@ -20,6 +21,7 @@ const taskSchema = z.object({
 })
 
 export function TaskFormPage({ mode }) {
+  const { t } = useI18n()
   const { id } = useParams()
   const navigate = useNavigate()
   const currentTask = useTaskStore((state) => state.currentTask)
@@ -78,9 +80,9 @@ export function TaskFormPage({ mode }) {
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-semibold">{isEdit ? 'Edit task' : 'Create task'}</h1>
+          <h1 className="text-2xl font-semibold">{isEdit ? 'Edit task' : t('createTask')}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {isEdit ? currentTask?.title || 'Update task details' : 'Add a task to your workspace.'}
+            {isEdit ? currentTask?.title || t('updateTaskDetails') : t('addTaskWorkspace')}
           </p>
         </div>
       </div>
@@ -140,11 +142,11 @@ export function TaskFormPage({ mode }) {
 
         <div className="flex justify-end gap-3">
           <Button asChild variant="outline">
-            <Link to="/tasks">Cancel</Link>
+            <Link to="/tasks">{t('cancel')}</Link>
           </Button>
           <Button disabled={isLoading}>
             <Save className="size-4" aria-hidden="true" />
-            {isLoading ? 'Saving...' : 'Save task'}
+            {isLoading ? 'Saving...' : t('saveTask')}
           </Button>
         </div>
       </form>

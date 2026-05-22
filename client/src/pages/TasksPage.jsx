@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useI18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 import { useTaskStore } from '@/store/taskStore'
 
@@ -27,6 +28,7 @@ const priorityOptions = [
 const SEARCH_DEBOUNCE_MS = 400
 
 export function TasksPage() {
+  const { t } = useI18n()
   const tasks = useTaskStore((state) => state.tasks)
   const meta = useTaskStore((state) => state.meta)
   const status = useTaskStore((state) => state.status)
@@ -112,11 +114,11 @@ export function TasksPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Tasks</h1>
+          <h1 className="text-2xl font-semibold">{t('tasks')}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{summary}</p>
         </div>
         <Button asChild>
-          <Link to="/tasks/new">Create task</Link>
+          <Link to="/tasks/new">{t('createTask')}</Link>
         </Button>
       </div>
 

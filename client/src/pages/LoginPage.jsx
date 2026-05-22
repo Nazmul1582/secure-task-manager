@@ -8,6 +8,7 @@ import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useI18n } from '@/lib/i18n'
 import { useAuthStore } from '@/store/authStore'
 
 const loginSchema = z.object({
@@ -16,6 +17,7 @@ const loginSchema = z.object({
 })
 
 export function LoginPage() {
+  const { t } = useI18n()
   const navigate = useNavigate()
   const location = useLocation()
   const login = useAuthStore((state) => state.login)
@@ -51,15 +53,15 @@ export function LoginPage() {
 
   return (
     <div className="w-full">
-      <h1 className="text-2xl font-semibold">Sign in</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Use your secureTaskManager account.</p>
+      <h1 className="text-2xl font-semibold">{t('signIn')}</h1>
+      <p className="mt-2 text-sm text-muted-foreground">{t('useAccount')}</p>
       <form
         className="mt-6 space-y-5 rounded-md border border-border bg-card p-6 shadow-sm"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="space-y-2">
           <label className="text-sm font-medium" htmlFor="email">
-            Email
+            {t('email')}
           </label>
           <div className="relative">
             <Mail
@@ -81,7 +83,7 @@ export function LoginPage() {
 
         <div className="space-y-2">
           <label className="text-sm font-medium" htmlFor="password">
-            Password
+            {t('password')}
           </label>
           <div className="relative">
             <Lock
@@ -108,13 +110,13 @@ export function LoginPage() {
         )}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? 'Signing in...' : 'Sign in'}
+          {isLoading ? 'Signing in...' : t('signIn')}
         </Button>
       </form>
       <p className="mt-5 text-sm text-muted-foreground">
-        New here?{' '}
+        {t('newHere')}{' '}
         <Link className="font-medium text-primary hover:underline" to="/register">
-          Create an account
+          {t('createAccount')}
         </Link>
       </p>
     </div>

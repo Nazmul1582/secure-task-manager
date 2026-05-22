@@ -4,17 +4,19 @@ import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { useI18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/authStore'
 
 const navigation = [
-  { label: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { label: 'Tasks', href: '/tasks', icon: ListTodo },
-  { label: 'Kanban', href: '/tasks/kanban', icon: PanelsTopLeft },
-  { label: 'Settings', href: '/settings', icon: Settings },
+  { labelKey: 'dashboard', href: '/', icon: LayoutDashboard },
+  { labelKey: 'tasks', href: '/tasks', icon: ListTodo },
+  { labelKey: 'kanban', href: '/tasks/kanban', icon: PanelsTopLeft },
+  { labelKey: 'settings', href: '/settings', icon: Settings },
 ]
 
 export function AppLayout() {
+  const { t } = useI18n()
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
 
@@ -48,7 +50,7 @@ export function AppLayout() {
                 }
               >
                 <item.icon className="size-4" aria-hidden="true" />
-                {item.label}
+                {t(item.labelKey)}
               </NavLink>
             ))}
           </nav>
@@ -64,7 +66,7 @@ export function AppLayout() {
               <ThemeToggle />
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 <LogOut className="size-4" aria-hidden="true" />
-                Logout
+                {t('logout')}
               </Button>
             </div>
           </header>

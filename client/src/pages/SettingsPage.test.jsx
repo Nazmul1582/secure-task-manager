@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { clearAccessToken } from '@/api/tokenManager'
+import { I18nProvider } from '@/lib/i18n'
 import { useAuthStore } from '@/store/authStore'
 import { SettingsPage } from './SettingsPage'
 
@@ -16,7 +17,9 @@ vi.mock('sonner', () => ({
 function renderSettings() {
   return render(
     <MemoryRouter>
-      <SettingsPage />
+      <I18nProvider>
+        <SettingsPage />
+      </I18nProvider>
     </MemoryRouter>,
   )
 }
@@ -31,6 +34,7 @@ describe('SettingsPage', () => {
 
   beforeEach(() => {
     clearAccessToken()
+    localStorage.removeItem('secureTaskManager.language')
     vi.clearAllMocks()
     useAuthStore.setState({
       ...actions,
@@ -82,5 +86,18 @@ describe('SettingsPage', () => {
 
     expect(screen.getByRole('heading', { name: /delete account/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /^delete account$/i })).toBeInTheDocument()
+  })
+
+  it('switches settings labels to Bangla', () => {
+    renderSettings()
+
+    fireEvent.change(screen.getByDisplayValue('English'), {
+      target: {
+        value: 'bn',
+      },
+    })
+
+    expect(screen.getByRole('heading', { name: 'সেটিংস' })).toBeInTheDocument()
+    expect(screen.getByText('প্রোফাইল')).toBeInTheDocument()
   })
 })

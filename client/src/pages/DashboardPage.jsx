@@ -1,9 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
+import { useI18n } from '@/lib/i18n'
 import { useTaskStore } from '@/store/taskStore'
 
 export function DashboardPage() {
+  const { t } = useI18n()
   const tasks = useTaskStore((state) => state.tasks)
   const status = useTaskStore((state) => state.status)
   const error = useTaskStore((state) => state.error)
@@ -18,8 +20,8 @@ export function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Overview of tasks, deadlines, and productivity.</p>
+        <h1 className="text-2xl font-semibold">{t('dashboard')}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t('overview')}</p>
       </div>
 
       {error && (

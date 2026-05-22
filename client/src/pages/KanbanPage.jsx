@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/lib/i18n'
 import { getNextPosition } from '@/lib/kanbanPosition'
 import { cn } from '@/lib/utils'
 import { useTaskStore } from '@/store/taskStore'
@@ -18,6 +19,7 @@ const columns = [
 ]
 
 export function KanbanPage() {
+  const { t } = useI18n()
   const tasks = useTaskStore((state) => state.tasks)
   const status = useTaskStore((state) => state.status)
   const error = useTaskStore((state) => state.error)
@@ -86,11 +88,11 @@ export function KanbanPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Kanban</h1>
+          <h1 className="text-2xl font-semibold">{t('kanban')}</h1>
           <p className="mt-1 text-sm text-muted-foreground">Board view grouped by task status.</p>
         </div>
         <Button asChild>
-          <Link to="/tasks/new">Create task</Link>
+          <Link to="/tasks/new">{t('createTask')}</Link>
         </Button>
       </div>
 
