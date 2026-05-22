@@ -147,7 +147,7 @@ test('Deleted users cannot refresh sessions', async () => {
 test('Task text search disables sanitizeFilter only for the trusted server-built query', async () => {
   const originalFind = Task.find
   const originalCountDocuments = Task.countDocuments
-  const originalUserFind = User.find
+  const originalUserCollectionDistinct = User.collection.distinct
   const userId = new mongoose.Types.ObjectId()
   const query = {
     limit: 10,
@@ -166,7 +166,6 @@ test('Task text search disables sanitizeFilter only for the trusted server-built
   let findOptions
   let countFilter
   let countOptions
-  let deletedUserOptions
 
   const findQuery = {
     lean() {
@@ -208,23 +207,10 @@ test('Task text search disables sanitizeFilter only for the trusted server-built
     countFilter = filter
     return countQuery
   }
-  User.find = (filter) => {
-    const trustedSymbols = Object.getOwnPropertySymbols(filter).filter(
-      (symbol) => symbol.toString() === 'Symbol(mongoose#trustedSymbol)',
-    )
-
-    assert.deepEqual(filter.deletedAt, { $ne: null })
-    assert.equal(filter[trustedSymbols[0]], true)
-
-    return {
-      setOptions(options) {
-        deletedUserOptions = options
-        return this
-      },
-      distinct() {
-        return Promise.resolve([])
-      },
-    }
+  User.collection.distinct = (field, filter) => {
+    assert.equal(field, '_id')
+    assert.deepEqual(filter, { deletedAt: { $ne: null } })
+    return Promise.resolve([])
   }
 
   try {
@@ -236,12 +222,11 @@ test('Task text search disables sanitizeFilter only for the trusted server-built
     assert.deepEqual(findProjection, { score: { $meta: 'textScore' } })
     assert.equal(findOptions.sanitizeFilter, false)
     assert.equal(countOptions.sanitizeFilter, false)
-    assert.equal(deletedUserOptions.sanitizeFilter, false)
     assert.deepEqual(findFilter.$or, [{ createdBy: userId }, { assignedTo: userId }])
   } finally {
     Task.find = originalFind
     Task.countDocuments = originalCountDocuments
-    User.find = originalUserFind
+    User.collection.distinct = originalUserCollectionDistinct
   }
 })
 

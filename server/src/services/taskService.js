@@ -1,5 +1,3 @@
-import mongoose from 'mongoose'
-
 import { USER_ROLES, User } from '../models/User.js'
 import { Task } from '../models/Task.js'
 import { ApiError } from '../utils/apiError.js'
@@ -173,8 +171,7 @@ function buildTaskAccessFilter(user) {
 
 async function buildVisibleTaskFilter(user) {
   const accessFilter = buildTaskAccessFilter(user)
-  const deletedUserFilter = mongoose.trusted({ deletedAt: { $ne: null } })
-  const deletedUserIds = await User.find(deletedUserFilter).setOptions({ sanitizeFilter: false }).distinct('_id')
+  const deletedUserIds = await User.collection.distinct('_id', { deletedAt: { $ne: null } })
 
   if (deletedUserIds.length === 0) {
     return accessFilter
