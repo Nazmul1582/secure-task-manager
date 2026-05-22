@@ -7,8 +7,6 @@ if (env.DNS_SERVERS.length > 0) {
   dns.setServers(env.DNS_SERVERS)
 }
 
-mongoose.set('sanitizeFilter', true)
-
 let connectionPromise
 
 export async function connectDatabase() {

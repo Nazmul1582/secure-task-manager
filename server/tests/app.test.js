@@ -33,6 +33,10 @@ test('GET /api/tasks rejects requests without an access token', async () => {
   assert.equal(response.body.message, 'Access token is required')
 })
 
+test('Mongoose global filter sanitization stays disabled for server-built operators', () => {
+  assert.notEqual(mongoose.get('sanitizeFilter'), true)
+})
+
 test('POST /api/auth/register validates required fields before database work', async () => {
   const response = await request(app).post('/api/auth/register').send({}).expect(400)
 
