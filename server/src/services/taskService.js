@@ -56,15 +56,23 @@ export async function listTasksForUser(user, query) {
     ? { score: { $meta: 'textScore' }, [query.sortBy]: sortDirection }
     : { [query.sortBy]: sortDirection }
 
+  const tasksQuery = Task.find(filter, projection)
+  const totalQuery = Task.countDocuments(filter)
+
+  if (query.search) {
+    tasksQuery.setOptions({ sanitizeFilter: false })
+    totalQuery.setOptions({ sanitizeFilter: false })
+  }
+
   const [tasks, total] = await Promise.all([
-    Task.find(filter, projection)
+    tasksQuery
       .populate('createdBy', userPublicFields)
       .populate('assignedTo', userPublicFields)
       .sort(sort)
       .skip(skip)
       .limit(query.limit)
       .lean(),
-    Task.countDocuments(filter),
+    totalQuery,
   ])
 
   return {

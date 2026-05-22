@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Pencil, Search } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
@@ -23,6 +23,8 @@ const priorityOptions = [
   { label: 'Urgent', value: 'urgent' },
 ]
 
+const SEARCH_DEBOUNCE_MS = 400
+
 export function TasksPage() {
   const tasks = useTaskStore((state) => state.tasks)
   const meta = useTaskStore((state) => state.meta)
@@ -40,9 +42,35 @@ export function TasksPage() {
     sortOrder: 'desc',
   })
 
+  const applySearch = useCallback((value) => {
+    const search = value.trim()
+
+    setQuery((current) => {
+      if (current.search === search) {
+        return current
+      }
+
+      return {
+        ...current,
+        search,
+        page: 1,
+      }
+    })
+  }, [])
+
   useEffect(() => {
     fetchTasks(query)
   }, [fetchTasks, query])
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      applySearch(searchInput)
+    }, SEARCH_DEBOUNCE_MS)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [applySearch, searchInput])
 
   const canGoBack = query.page > 1
   const canGoForward = meta ? query.page < meta.totalPages : false
@@ -58,7 +86,7 @@ export function TasksPage() {
 
   function submitSearch(event) {
     event.preventDefault()
-    updateQuery({ search: searchInput.trim() })
+    applySearch(searchInput)
   }
 
   return (

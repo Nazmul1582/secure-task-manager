@@ -19,7 +19,6 @@ const publicAuthRoutes = new Set(['/login', '/register'])
 
 function App() {
   const location = useLocation()
-  const status = useAuthStore((state) => state.status)
   const clearSession = useAuthStore((state) => state.clearSession)
   const refresh = useAuthStore((state) => state.refresh)
   const [sessionReady, setSessionReady] = useState(false)
@@ -29,6 +28,8 @@ function App() {
     let isActive = true
 
     async function bootstrapSession() {
+      const status = useAuthStore.getState().status
+
       if (status === 'idle') {
         if (isPublicAuthRoute) {
           clearSession()
@@ -47,7 +48,7 @@ function App() {
     return () => {
       isActive = false
     }
-  }, [clearSession, isPublicAuthRoute, refresh, status])
+  }, [clearSession, isPublicAuthRoute, refresh])
 
   if (!sessionReady) {
     return <AppLoading />

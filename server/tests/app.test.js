@@ -9,7 +9,9 @@ process.env.ACCESS_TOKEN_SECRET ||= 'a'.repeat(32)
 process.env.REFRESH_TOKEN_SECRET ||= 'b'.repeat(32)
 
 const { default: app } = await import('../src/app.js')
-const { User } = await import('../src/models/User.js')
+const { listTasksForUser } = await import('../src/services/taskService.js')
+const { Task } = await import('../src/models/Task.js')
+const { USER_ROLES, User } = await import('../src/models/User.js')
 
 test('GET /api/health returns the standard success envelope', async () => {
   const response = await request(app).get('/api/health').expect(200)
@@ -58,5 +60,84 @@ test('User save hook hashes passwords without requiring a next callback', async 
   } finally {
     User.collection.insertOne = originalInsertOne
     mongoose.connection.readyState = originalReadyState
+  }
+})
+
+test('Task text search disables sanitizeFilter only for the trusted server-built query', async () => {
+  const originalFind = Task.find
+  const originalCountDocuments = Task.countDocuments
+  const userId = new mongoose.Types.ObjectId()
+  const query = {
+    limit: 10,
+    page: 1,
+    search: 'complete',
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+  }
+  const user = {
+    _id: userId,
+    id: userId.toString(),
+    role: USER_ROLES.MEMBER,
+  }
+  let findFilter
+  let findProjection
+  let findOptions
+  let countFilter
+  let countOptions
+
+  const findQuery = {
+    lean() {
+      return Promise.resolve([])
+    },
+    limit() {
+      return this
+    },
+    populate() {
+      return this
+    },
+    setOptions(options) {
+      findOptions = options
+      return this
+    },
+    skip() {
+      return this
+    },
+    sort() {
+      return this
+    },
+  }
+  const countQuery = {
+    setOptions(options) {
+      countOptions = options
+      return this
+    },
+    then(resolve, reject) {
+      return Promise.resolve(0).then(resolve, reject)
+    },
+  }
+
+  Task.find = (filter, projection) => {
+    findFilter = filter
+    findProjection = projection
+    return findQuery
+  }
+  Task.countDocuments = (filter) => {
+    countFilter = filter
+    return countQuery
+  }
+
+  try {
+    const result = await listTasksForUser(user, query)
+
+    assert.deepEqual(result.tasks, [])
+    assert.deepEqual(findFilter.$text, { $search: 'complete' })
+    assert.deepEqual(countFilter.$text, { $search: 'complete' })
+    assert.deepEqual(findProjection, { score: { $meta: 'textScore' } })
+    assert.equal(findOptions.sanitizeFilter, false)
+    assert.equal(countOptions.sanitizeFilter, false)
+    assert.deepEqual(findFilter.$or, [{ createdBy: userId }, { assignedTo: userId }])
+  } finally {
+    Task.find = originalFind
+    Task.countDocuments = originalCountDocuments
   }
 })

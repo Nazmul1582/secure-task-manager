@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { act, cleanup, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -35,6 +35,7 @@ describe('App session bootstrap', () => {
   })
 
   afterEach(() => {
+    cleanup()
     vi.restoreAllMocks()
     useAuthStore.setState(originalActions)
   })
@@ -57,5 +58,39 @@ describe('App session bootstrap', () => {
 
     expect(await screen.findByRole('heading', { name: /create account/i })).toBeInTheDocument()
     expect(refresh).not.toHaveBeenCalled()
+  })
+
+  it('waits for refresh before rendering a protected route after a page reload', async () => {
+    let resolveRefresh
+    const refreshComplete = new Promise((resolve) => {
+      resolveRefresh = resolve
+    })
+    const session = {
+      accessToken: 'fresh-token',
+      user: {
+        email: 'member@example.com',
+        name: 'Member User',
+      },
+    }
+    const refresh = vi.fn(async () => {
+      await refreshComplete
+      useAuthStore.getState().setSession(session)
+      return session
+    })
+    useAuthStore.setState({ refresh })
+
+    renderApp('/settings')
+
+    expect(screen.queryByRole('heading', { name: /settings/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /sign in/i })).not.toBeInTheDocument()
+
+    await act(async () => {
+      resolveRefresh()
+      await refreshComplete
+    })
+
+    expect(await screen.findByRole('heading', { name: /settings/i })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /sign in/i })).not.toBeInTheDocument()
+    expect(refresh).toHaveBeenCalledTimes(1)
   })
 })

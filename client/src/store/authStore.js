@@ -10,6 +10,8 @@ const initialState = {
   error: null,
 }
 
+let refreshSessionPromise = null
+
 export const useAuthStore = create((set, get) => ({
   ...initialState,
 
@@ -62,16 +64,27 @@ export const useAuthStore = create((set, get) => ({
   },
 
   async refresh() {
+    if (refreshSessionPromise) {
+      return refreshSessionPromise
+    }
+
     set({ status: 'loading', error: null })
 
-    try {
-      const response = await authApi.refreshToken()
-      get().setSession(response.data)
-      return response.data
-    } catch {
-      get().clearSession()
-      return null
-    }
+    refreshSessionPromise = authApi
+      .refreshToken()
+      .then((response) => {
+        get().setSession(response.data)
+        return response.data
+      })
+      .catch(() => {
+        get().clearSession()
+        return null
+      })
+      .finally(() => {
+        refreshSessionPromise = null
+      })
+
+    return refreshSessionPromise
   },
 
   async loadMe() {
