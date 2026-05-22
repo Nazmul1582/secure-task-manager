@@ -166,6 +166,7 @@ test('Task text search disables sanitizeFilter only for the trusted server-built
   let findOptions
   let countFilter
   let countOptions
+  let deletedUserOptions
 
   const findQuery = {
     lean() {
@@ -208,9 +209,18 @@ test('Task text search disables sanitizeFilter only for the trusted server-built
     return countQuery
   }
   User.find = (filter) => {
-    assert.deepEqual(filter, { deletedAt: { $ne: null } })
+    const trustedSymbols = Object.getOwnPropertySymbols(filter).filter(
+      (symbol) => symbol.toString() === 'Symbol(mongoose#trustedSymbol)',
+    )
+
+    assert.deepEqual(filter.deletedAt, { $ne: null })
+    assert.equal(filter[trustedSymbols[0]], true)
 
     return {
+      setOptions(options) {
+        deletedUserOptions = options
+        return this
+      },
       distinct() {
         return Promise.resolve([])
       },
@@ -226,6 +236,7 @@ test('Task text search disables sanitizeFilter only for the trusted server-built
     assert.deepEqual(findProjection, { score: { $meta: 'textScore' } })
     assert.equal(findOptions.sanitizeFilter, false)
     assert.equal(countOptions.sanitizeFilter, false)
+    assert.equal(deletedUserOptions.sanitizeFilter, false)
     assert.deepEqual(findFilter.$or, [{ createdBy: userId }, { assignedTo: userId }])
   } finally {
     Task.find = originalFind

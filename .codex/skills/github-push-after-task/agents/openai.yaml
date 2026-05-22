@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Push After Task"
+  short_description: "Commit and push completed repo work."
+  default_prompt: "Use $github-push-after-task after finishing code changes in this workspace."
