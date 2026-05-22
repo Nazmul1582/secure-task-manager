@@ -145,15 +145,15 @@ test('Deleted users cannot refresh sessions', async () => {
   }
 })
 
-test('Task text search disables sanitizeFilter only for the trusted server-built query', async () => {
+test('Task list disables sanitizeFilter for trusted server-built filters', async () => {
   const originalFind = Task.find
   const originalCountDocuments = Task.countDocuments
   const originalUserCollectionDistinct = User.collection.distinct
   const userId = new mongoose.Types.ObjectId()
+  const deletedUserId = new mongoose.Types.ObjectId()
   const query = {
     limit: 10,
     page: 1,
-    search: 'complete',
     sortBy: 'createdAt',
     sortOrder: 'desc',
   }
@@ -211,19 +211,24 @@ test('Task text search disables sanitizeFilter only for the trusted server-built
   User.collection.distinct = (field, filter) => {
     assert.equal(field, '_id')
     assert.deepEqual(filter, { deletedAt: { $ne: null } })
-    return Promise.resolve([])
+    return Promise.resolve([deletedUserId])
   }
 
   try {
     const result = await listTasksForUser(user, query)
 
     assert.deepEqual(result.tasks, [])
-    assert.deepEqual(findFilter.$text, { $search: 'complete' })
-    assert.deepEqual(countFilter.$text, { $search: 'complete' })
-    assert.deepEqual(findProjection, { score: { $meta: 'textScore' } })
+    assert.equal(findProjection, undefined)
     assert.equal(findOptions.sanitizeFilter, false)
     assert.equal(countOptions.sanitizeFilter, false)
-    assert.deepEqual(findFilter.$or, [{ createdBy: userId }, { assignedTo: userId }])
+    assert.deepEqual(findFilter.$and, [
+      { $or: [{ createdBy: userId }, { assignedTo: userId }] },
+      {
+        assignedTo: { $nin: [deletedUserId] },
+        createdBy: { $nin: [deletedUserId] },
+      },
+    ])
+    assert.deepEqual(countFilter, findFilter)
   } finally {
     Task.find = originalFind
     Task.countDocuments = originalCountDocuments

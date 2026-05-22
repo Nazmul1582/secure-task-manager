@@ -61,10 +61,8 @@ export async function listTasksForUser(user, query) {
   const tasksQuery = Task.find(filter, projection)
   const totalQuery = Task.countDocuments(filter)
 
-  if (query.search) {
-    tasksQuery.setOptions({ sanitizeFilter: false })
-    totalQuery.setOptions({ sanitizeFilter: false })
-  }
+  tasksQuery.setOptions({ sanitizeFilter: false })
+  totalQuery.setOptions({ sanitizeFilter: false })
 
   const [tasks, total] = await Promise.all([
     tasksQuery
