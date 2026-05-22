@@ -1,4 +1,4 @@
-import { LayoutDashboard, ListTodo, LogOut, PanelsTopLeft, Settings, ShieldCheck } from 'lucide-react'
+import { LayoutDashboard, ListTodo, LogOut, PanelsTopLeft, Settings, ShieldCheck, Users } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { toast } from 'sonner'
 
@@ -15,10 +15,13 @@ const navigation = [
   { labelKey: 'settings', href: '/settings', icon: Settings },
 ]
 
+const adminNavigation = [{ labelKey: 'adminUsers', href: '/admin/users', icon: Users }]
+
 export function AppLayout() {
   const { t } = useI18n()
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
+  const visibleNavigation = user?.role === 'admin' ? [...navigation, ...adminNavigation] : navigation
 
   async function handleLogout() {
     await logout()
@@ -37,7 +40,7 @@ export function AppLayout() {
           </div>
 
           <nav className="mt-6 flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
-            {navigation.map((item) => (
+            {visibleNavigation.map((item) => (
               <NavLink
                 key={item.href}
                 to={item.href}

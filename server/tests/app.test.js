@@ -12,6 +12,7 @@ const { default: app } = await import('../src/app.js')
 const { listTasksForUser } = await import('../src/services/taskService.js')
 const { loginUser, rotateRefreshSession } = await import('../src/services/authService.js')
 const { updateUserRoleForAdmin } = await import('../src/services/userService.js')
+const { seedAdmin } = await import('../scripts/seed-admin.js')
 const { updateTaskSchema } = await import('../src/validators/taskValidators.js')
 const { TASK_STATUSES, Task } = await import('../src/models/Task.js')
 const { USER_ROLES, User } = await import('../src/models/User.js')
@@ -265,4 +266,83 @@ test('Admin role service updates an active user role', async () => {
   } finally {
     User.findOne = originalFindOne
   }
+})
+
+test('Admin seed creates a new admin user', async () => {
+  let createdInput
+  const UserModel = {
+    findOne(filter) {
+      assert.deepEqual(filter, { email: 'admin@todo.com' })
+      return {
+        select() {
+          return Promise.resolve(null)
+        },
+      }
+    },
+    async create(input) {
+      createdInput = input
+      return {
+        toJSON() {
+          return {
+            email: input.email,
+            role: input.role,
+          }
+        },
+      }
+    },
+  }
+
+  const result = await seedAdmin({
+    UserModel,
+    email: 'Admin@Todo.com',
+    name: 'Admin',
+    password: 'adminTodo123',
+  })
+
+  assert.equal(result.action, 'created')
+  assert.equal(createdInput.email, 'admin@todo.com')
+  assert.equal(createdInput.password, 'adminTodo123')
+  assert.equal(createdInput.role, USER_ROLES.ADMIN)
+})
+
+test('Admin seed promotes and restores an existing user', async () => {
+  const existingUser = {
+    deletedAt: new Date(),
+    email: 'admin@todo.com',
+    name: '',
+    refreshTokens: [{ tokenHash: 'old' }],
+    role: USER_ROLES.MEMBER,
+    async save(options) {
+      assert.deepEqual(options, { validateBeforeSave: false })
+    },
+    toJSON() {
+      return {
+        deletedAt: this.deletedAt,
+        email: this.email,
+        name: this.name,
+        role: this.role,
+      }
+    },
+  }
+  const UserModel = {
+    findOne() {
+      return {
+        select() {
+          return Promise.resolve(existingUser)
+        },
+      }
+    },
+  }
+
+  const result = await seedAdmin({
+    UserModel,
+    email: 'admin@todo.com',
+    name: 'Admin',
+  })
+
+  assert.equal(result.action, 'promoted')
+  assert.equal(existingUser.deletedAt, null)
+  assert.equal(existingUser.name, 'Admin')
+  assert.deepEqual(existingUser.refreshTokens, [])
+  assert.equal(existingUser.role, USER_ROLES.ADMIN)
 })

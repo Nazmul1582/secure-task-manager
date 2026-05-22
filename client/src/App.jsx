@@ -4,6 +4,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AppLoading } from '@/components/AppLoading'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { AppLayout } from '@/layouts/AppLayout'
+import { AdminUsersPage } from '@/pages/AdminUsersPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { KanbanPage } from '@/pages/KanbanPage'
 import { LoginPage } from '@/pages/LoginPage'
@@ -12,6 +13,7 @@ import { RegisterPage } from '@/pages/RegisterPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { TaskFormPage } from '@/pages/TaskFormPage'
 import { TasksPage } from '@/pages/TasksPage'
+import { AdminRoute } from '@/routes/AdminRoute'
 import { ProtectedRoute } from '@/routes/ProtectedRoute'
 import { useAuthStore } from '@/store/authStore'
 
@@ -69,6 +71,9 @@ function App() {
           <Route path="/tasks/:id/edit" element={<TaskFormPage mode="edit" />} />
           <Route path="/tasks/kanban" element={<KanbanPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/admin/users" element={<AdminUsersPage />} />
+          </Route>
         </Route>
       </Route>
 

@@ -2,20 +2,41 @@ import { useEffect, useMemo } from 'react'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 import { useI18n } from '@/lib/i18n'
+import { useAuthStore } from '@/store/authStore'
 import { useTaskStore } from '@/store/taskStore'
+import { useUserStore } from '@/store/userStore'
 
 export function DashboardPage() {
   const { t } = useI18n()
+  const user = useAuthStore((state) => state.user)
   const tasks = useTaskStore((state) => state.tasks)
   const status = useTaskStore((state) => state.status)
   const error = useTaskStore((state) => state.error)
   const fetchTasks = useTaskStore((state) => state.fetchTasks)
+  const users = useUserStore((state) => state.users)
+  const userStatus = useUserStore((state) => state.status)
+  const userError = useUserStore((state) => state.error)
+  const fetchUsers = useUserStore((state) => state.fetchUsers)
 
   useEffect(() => {
     fetchTasks({ limit: 100 })
   }, [fetchTasks])
 
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      fetchUsers().catch(() => {})
+    }
+  }, [fetchUsers, user?.role])
+
   const dashboard = useMemo(() => buildDashboard(tasks), [tasks])
+  const adminSummary = useMemo(
+    () => ({
+      admins: users.filter((item) => item.role === 'admin').length,
+      members: users.filter((item) => item.role === 'member').length,
+      total: users.length,
+    }),
+    [users],
+  )
 
   return (
     <div className="space-y-6">
@@ -30,12 +51,30 @@ export function DashboardPage() {
         </div>
       )}
 
+      {user?.role === 'admin' && (
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-base font-semibold">Admin overview</h2>
+            <p className="text-sm text-muted-foreground">
+              {userStatus === 'loading' ? 'Loading users...' : 'Workspace user access summary'}
+            </p>
+          </div>
+          {userError && (
+            <div className="rounded-md border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+              {userError}
+            </div>
+          )}
+          <div className="grid gap-4 sm:grid-cols-3">
+            <DashboardStat label="Total users" value={adminSummary.total} />
+            <DashboardStat label="Admins" value={adminSummary.admins} />
+            <DashboardStat label="Members" value={adminSummary.members} />
+          </div>
+        </section>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-3">
         {dashboard.stats.map((stat) => (
-          <div key={stat.label} className="rounded-md border border-border bg-card p-5 shadow-sm">
-            <p className="text-sm text-muted-foreground">{stat.label}</p>
-            <p className="mt-3 text-3xl font-semibold">{stat.value}</p>
-          </div>
+          <DashboardStat key={stat.label} label={stat.label} value={stat.value} />
         ))}
       </div>
 
@@ -89,6 +128,15 @@ export function DashboardPage() {
           </div>
         </section>
       </div>
+    </div>
+  )
+}
+
+function DashboardStat({ label, value }) {
+  return (
+    <div className="rounded-md border border-border bg-card p-5 shadow-sm">
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className="mt-3 text-3xl font-semibold">{value}</p>
     </div>
   )
 }

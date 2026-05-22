@@ -9,6 +9,7 @@
     "start": "node server.js",
     "lint": "eslint .",
     "lint:syntax": "node scripts/check-syntax.js",
+    "seed:admin": "node scripts/seed-admin.js",
     "smoke": "node scripts/smoke-api.js",
     "test:api": "node --test tests/*.test.js"
   },
