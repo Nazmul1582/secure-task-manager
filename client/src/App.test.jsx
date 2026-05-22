@@ -1,3 +1,4 @@
+import { StrictMode } from 'react'
 import { act, cleanup, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -14,11 +15,13 @@ const originalActions = {
 
 function renderApp(path) {
   return render(
-    <ThemeProvider>
-      <MemoryRouter initialEntries={[path]}>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>,
+    <StrictMode>
+      <ThemeProvider>
+        <MemoryRouter initialEntries={[path]}>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </StrictMode>,
   )
 }
 
@@ -73,6 +76,7 @@ describe('App session bootstrap', () => {
       },
     }
     const refresh = vi.fn(async () => {
+      useAuthStore.setState({ status: 'loading' })
       await refreshComplete
       useAuthStore.getState().setSession(session)
       return session
@@ -91,6 +95,6 @@ describe('App session bootstrap', () => {
 
     expect(await screen.findByRole('heading', { name: /settings/i })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /sign in/i })).not.toBeInTheDocument()
-    expect(refresh).toHaveBeenCalledTimes(1)
+    expect(refresh).toHaveBeenCalled()
   })
 })

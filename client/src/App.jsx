@@ -30,12 +30,12 @@ function App() {
     async function bootstrapSession() {
       const status = useAuthStore.getState().status
 
-      if (status === 'idle') {
-        if (isPublicAuthRoute) {
+      if (isPublicAuthRoute) {
+        if (status === 'idle') {
           clearSession()
-        } else {
-          await refresh()
         }
+      } else if (status !== 'authenticated') {
+        await refresh()
       }
 
       if (isActive) {
